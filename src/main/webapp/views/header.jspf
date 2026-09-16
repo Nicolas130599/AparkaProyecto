@@ -1,0 +1,20 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<nav class="navbar">
+    <div class="navbar-brand">🅿️ Aparka</div>
+    <ul class="navbar-links">
+        <c:choose>
+            <c:when test="${sessionScope.rol == 'ADMIN'}">
+                <li><a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/zonas">Gestionar zonas</a></li>
+            </c:when>
+            <c:when test="${sessionScope.rol == 'USUARIO'}">
+                <li><a href="${pageContext.request.contextPath}/zonas">Zonas</a></li>
+                <li><a href="${pageContext.request.contextPath}/reserva">Estacionar</a></li>
+                <li><a href="${pageContext.request.contextPath}/perfil">Mi perfil</a></li>
+            </c:when>
+        </c:choose>
+        <c:if test="${not empty sessionScope.usuario}">
+            <li><a href="${pageContext.request.contextPath}/logout" class="nav-logout">Salir</a></li>
+        </c:if>
+    </ul>
+</nav>

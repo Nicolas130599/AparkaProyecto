@@ -1,0 +1,167 @@
+:root {
+    --azul-petroleo: #1B4B5A;
+    --azul-petroleo-oscuro: #0E313C;
+    --crema: #F7F0E1;
+    --crema-claro: #FDFAF3;
+    --texto: #233238;
+    --acento: #C97B4A;
+    --exito: #6B9080;
+    --alto: #C9573F;
+    --medio: #D9A441;
+    --bajo: #6B9080;
+    --sombra: 0 6px 18px rgba(14, 49, 60, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--crema);
+    color: var(--texto);
+}
+
+/* ---------- NAVBAR ---------- */
+.navbar {
+    background: var(--azul-petroleo);
+    color: var(--crema-claro);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 32px;
+    box-shadow: var(--sombra);
+    animation: deslizarArriba 0.5s ease;
+}
+.navbar-brand { font-size: 1.3rem; font-weight: bold; }
+.navbar-links { list-style: none; display: flex; gap: 24px; }
+.navbar-links a {
+    color: var(--crema-claro);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 4px;
+    transition: color 0.25s ease;
+}
+.navbar-links a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--acento);
+    transition: width 0.3s ease;
+}
+.navbar-links a:hover { color: var(--acento); }
+.navbar-links a:hover::after { width: 100%; }
+.nav-logout { opacity: 0.85; }
+
+/* ---------- CONTENEDORES ---------- */
+.contenedor { max-width: 1100px; margin: 32px auto; padding: 0 20px; }
+.contenedor-estrecho { max-width: 480px; }
+.titulo-seccion { color: var(--azul-petroleo-oscuro); margin-bottom: 6px; }
+.descripcion { color: #5b6a6f; margin-bottom: 20px; }
+
+/* ---------- AUTENTICACIÓN ---------- */
+.pagina-auth {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--azul-petroleo) 0%, var(--azul-petroleo-oscuro) 100%);
+}
+.auth-card {
+    background: var(--crema-claro);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: var(--sombra);
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+}
+.logo { color: var(--azul-petroleo); margin-bottom: 4px; }
+.subtitulo { color: #6b7d82; margin-bottom: 24px; font-size: 0.9rem; }
+
+/* ---------- FORMULARIOS ---------- */
+.form-aparka { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.form-aparka label { font-size: 0.85rem; color: var(--azul-petroleo-oscuro); margin-top: 8px; }
+.form-aparka input {
+    padding: 10px 12px;
+    border: 1px solid #d8cfb8;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.95rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.form-aparka input:focus {
+    outline: none;
+    border-color: var(--azul-petroleo);
+    box-shadow: 0 0 0 3px rgba(27, 75, 90, 0.15);
+}
+.form-inline { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.form-inline input { flex: 1; min-width: 140px; }
+.form-linea { display: inline; }
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 18px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn-primario { background: var(--azul-petroleo); color: #fff; margin-top: 16px; }
+.btn-primario:hover { background: var(--azul-petroleo-oscuro); transform: scale(1.03); box-shadow: var(--sombra); }
+.btn-secundario { display: inline-block; background: var(--acento); color: #fff; text-decoration: none; text-align: center; margin-top: 10px; }
+.btn-secundario:hover { transform: scale(1.03); box-shadow: var(--sombra); }
+.btn-peligro { background: var(--alto); color: #fff; }
+.btn-chico { padding: 6px 10px; font-size: 0.8rem; }
+
+.enlace-secundario { margin-top: 18px; font-size: 0.9rem; }
+.enlace-secundario a { color: var(--azul-petroleo); font-weight: 600; }
+
+/* ---------- ALERTAS ---------- */
+.alerta { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 0.88rem; }
+.alerta-error { background: #f8d7d0; color: #8a2f1c; }
+.alerta-exito { background: #dcebe3; color: #2c4a3c; }
+
+/* ---------- ZONAS (cards) ---------- */
+.grid-zonas { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.card-zona {
+    background: var(--crema-claro);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--sombra);
+    border-left: 6px solid var(--bajo);
+    transition: transform 0.25s ease;
+}
+.card-zona:hover { transform: translateY(-4px); }
+.card-zona-header { display: flex; justify-content: space-between; align-items: center; }
+.ubicacion { color: #6b7d82; font-size: 0.88rem; margin: 4px 0; }
+
+.badge { padding: 3px 10px; border-radius: 999px; color: #fff; font-size: 0.75rem; font-weight: 600; }
+.badge-ALTO, .card-zona.badge-ALTO { background: var(--alto); border-color: var(--alto); }
+.badge-MEDIO, .card-zona.badge-MEDIO { background: var(--medio); border-color: var(--medio); }
+.badge-BAJO, .card-zona.badge-BAJO { background: var(--bajo); border-color: var(--bajo); }
+.card-zona.badge-ALTO, .card-zona.badge-MEDIO, .card-zona.badge-BAJO { background: var(--crema-claro); }
+
+/* ---------- TABLAS (admin) ---------- */
+.tabla-wrapper { background: var(--crema-claro); border-radius: 12px; padding: 12px; box-shadow: var(--sombra); overflow-x: auto; }
+.tabla-aparka { width: 100%; border-collapse: collapse; }
+.tabla-aparka th, .tabla-aparka td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee0c3; }
+.tabla-aparka th { color: var(--azul-petroleo-oscuro); }
+.barra-ocupacion { background: #eee0c3; border-radius: 6px; height: 8px; margin-bottom: 4px; overflow: hidden; }
+.barra-relleno { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+
+.tarjeta-formulario { background: var(--crema-claro); border-radius: 14px; padding: 24px; box-shadow: var(--sombra); }
+
+/* ---------- ANIMACIONES ---------- */
+@keyframes deslizarArriba {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animar-entrada {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: aparecer 0.6s ease forwards;
+}
+@keyframes aparecer {
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,11 @@
+# Compilados de Maven
+target/
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.iml
+
+# Sistema
+.DS_Store
+Thumbs.db
