@@ -22,11 +22,9 @@ El sistema calcula automáticamente un **nivel de flujo vehicular** (Bajo / Medi
 
 ## Capturas de pantalla
 
-> _Agrega aquí tus capturas de pantalla (arrástralas a este README en GitHub o pégalas como imágenes en `docs/screenshots/`)._
-
 | Login | Zonas disponibles | Dashboard admin |
 |---|---|---|
-| _captura_ | _captura_ | _captura_ |
+| ![Login](docs/screenshots/login.png) | ![Zonas disponibles](docs/screenshots/zonas.png) | ![Dashboard admin](docs/screenshots/dashboard.png) |
 
 ## Stack tecnológico
 
