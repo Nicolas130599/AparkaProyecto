@@ -15,6 +15,10 @@
     <h2 class="titulo-seccion animar-entrada">Zonas de mayor flujo vehicular</h2>
     <p class="descripcion">Ranking en vivo según el % de ocupación registrado.</p>
 
+    <a href="${pageContext.request.contextPath}/admin/reporte-excel" class="btn btn-secundario" style="display:inline-block; margin-bottom:16px; text-decoration:none;">
+        📊 Exportar a Excel
+    </a>
+
     <div class="tabla-wrapper animar-entrada">
         <table class="tabla-aparka">
             <thead>

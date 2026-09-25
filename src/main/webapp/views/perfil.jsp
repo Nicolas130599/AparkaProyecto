@@ -13,9 +13,10 @@
 <main class="contenedor contenedor-estrecho">
     <div class="tarjeta-formulario animar-entrada">
         <h2 class="titulo-seccion">Mi perfil</h2>
-        <p><strong>Nombre:</strong> ${sessionScope.usuario.nombre}</p>
-        <p><strong>Correo:</strong> ${sessionScope.usuario.correo}</p>
-        <p><strong>Placa registrada:</strong> ${sessionScope.usuario.placa}</p>
+        <p><strong>Nombre:</strong> ${sessionScope.usuario.nombres}</p>
+        <p><strong>Usuario:</strong> ${sessionScope.usuario.username}</p>
+        <p><strong>Correo:</strong> ${sessionScope.usuario.email}</p>
+        <p><strong>Rol:</strong> ${sessionScope.usuario.nombreRol}</p>
     </div>
 </main>
 

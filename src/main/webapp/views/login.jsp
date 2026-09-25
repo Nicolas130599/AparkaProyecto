@@ -18,10 +18,13 @@
         <c:if test="${param.registrado == '1'}">
             <div class="alerta alerta-exito">Cuenta creada. Ahora inicia sesión.</div>
         </c:if>
+        <c:if test="${param.passwordActualizada == '1'}">
+            <div class="alerta alerta-exito">Contraseña actualizada. Ya puedes iniciar sesión.</div>
+        </c:if>
 
         <form action="${pageContext.request.contextPath}/login" method="post" class="form-aparka">
-            <label for="correo">Correo</label>
-            <input type="email" id="correo" name="correo" required autofocus>
+            <label for="username">Usuario</label>
+            <input type="text" id="username" name="username" required autofocus>
 
             <label for="contrasena">Contraseña</label>
             <input type="password" id="contrasena" name="contrasena" required>
@@ -32,6 +35,9 @@
         <p class="enlace-secundario">
             ¿No tienes cuenta?
             <a href="${pageContext.request.contextPath}/registro">Regístrate aquí</a>
+        </p>
+        <p class="enlace-secundario">
+            <a href="${pageContext.request.contextPath}/recuperar">¿Olvidaste tu contraseña?</a>
         </p>
     </div>
     <script src="${pageContext.request.contextPath}/js/animaciones.js"></script>

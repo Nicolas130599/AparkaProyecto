@@ -30,7 +30,7 @@
                 <p>Ocupación: ${zona.capacidadOcupada} / ${zona.capacidadTotal}
                    (<fmt:formatNumber value="${zona.porcentajeOcupacion}" maxFractionDigits="0"/>%)</p>
                 <p>Tarifa: S/ ${zona.tarifaHora} / hora</p>
-                <a href="${pageContext.request.contextPath}/reserva?zonaId=${zona.id}" class="btn btn-secundario">
+                <a href="${pageContext.request.contextPath}/reserva?zonaId=${zona.zonaId}" class="btn btn-secundario">
                     Estacionar aquí
                 </a>
             </div>

@@ -1,10 +1,24 @@
 # Aparka — Cómo aplicar este código a tu proyecto
 
-> ⚠️ **Importante — Tomcat 11**: esta versión del código ya está corregida para
+> ⚠️ **Actualización importante**: el proyecto ahora usa la base de datos **`Parking`**
+> aportada por el compañero de backend, con tablas reales (`UsuarioSistema`, `Entrada`,
+> `Salida`, `CentroComercial`, etc.) en vez del esquema simplificado anterior
+> (`usuario`, `zona`, `reserva`). Se agregó una tabla `Zona` porque el esquema original
+> no traía capacidad ni nombre de zona — sin eso no se puede calcular el flujo vehicular,
+> que es la función central de Aparka.
+>
+> **Credenciales de prueba actualizadas:**
+> | Rol | Usuario | Contraseña |
+> |---|---|---|
+> | Admin | `admin` | `admin123` |
+> | Usuario | `demo` | `demo123` |
+>
+> (Antes se usaba correo/contraseña; ahora es usuario/contraseña, porque `UsuarioSistema`
+> usa `Username` en vez de `correo`.)
+
+> ⚠️ **Tomcat 11**: esta versión del código ya está corregida para
 > **Jakarta EE 10 / Servlet 6.0** (namespace `jakarta.servlet.*`), que es lo que exige
-> Tomcat 10 y 11. Si descargaste una versión anterior de este código (con `javax.servlet`),
-> **no va a desplegar en Tomcat 11** — usa siempre este paquete actualizado.
-> También requiere **JDK 17 o superior** (Tomcat 11 no corre con JDK 11).
+> Tomcat 10 y 11. También requiere **JDK 17 o superior**.
 
 Este paquete implementa la **Alternativa 1 (Servlets + JSP)** completa: 7 pantallas,
 2 perfiles (Usuario/Administrador), formularios funcionales y estilos con la paleta
@@ -29,15 +43,18 @@ schema.sql
 ```
 
 ## 2. Configurar la base de datos
-1. Instala MySQL (o adapta `schema.sql` a PostgreSQL si prefieres).
-2. Ejecuta el script `schema.sql` — crea las tablas `usuario`, `zona`, `reserva`
-   y datos de ejemplo (incluye un admin y 4 zonas con distinto flujo vehicular).
+1. Instala MySQL si no lo tienes.
+2. Ejecuta el script `schema.sql` (actualizado) — crea la base de datos `Parking`
+   completa: `CentroComercial`, `Rol`, `UsuarioSistema`, `CajaMaster`, `PuertaMaster`,
+   `Zona` (agregada), `Venta`, `Entrada`, `Salida`, más datos de ejemplo (2 usuarios,
+   4 zonas, 3 ingresos activos).
 3. Abre `src/main/java/com/aparka/util/ConexionBD.java` y actualiza:
    ```java
-   private static final String URL = "jdbc:mysql://localhost:3306/aparka_db...";
+   private static final String URL = "jdbc:mysql://localhost:3306/Parking...";
    private static final String USUARIO = "root";
    private static final String PASSWORD = "TU_PASSWORD_AQUI";
    ```
+   (ajusta el puerto si usas uno distinto a 3306, como hicimos antes con el 3307)
 
 ## 3. Verificar el `pom.xml`
 Ya incluye las dependencias necesarias: `javax.servlet-api`, `jstl`, `mysql-connector-java`.

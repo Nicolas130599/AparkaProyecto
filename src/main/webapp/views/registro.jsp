@@ -17,17 +17,17 @@
         </c:if>
 
         <form action="${pageContext.request.contextPath}/registro" method="post" class="form-aparka">
-            <label for="nombre">Nombre completo</label>
-            <input type="text" id="nombre" name="nombre" required autofocus>
+            <label for="nombres">Nombre completo</label>
+            <input type="text" id="nombres" name="nombres" required autofocus>
 
-            <label for="correo">Correo</label>
-            <input type="email" id="correo" name="correo" required>
+            <label for="username">Usuario</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Correo</label>
+            <input type="email" id="email" name="email" required>
 
             <label for="contrasena">Contraseña</label>
             <input type="password" id="contrasena" name="contrasena" required minlength="6">
-
-            <label for="placa">Placa del vehículo</label>
-            <input type="text" id="placa" name="placa" placeholder="Ej. ABC-123" required>
 
             <button type="submit" class="btn btn-primario">Registrarme</button>
         </form>

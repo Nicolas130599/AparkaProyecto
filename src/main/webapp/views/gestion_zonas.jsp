@@ -20,7 +20,6 @@
             <input type="text" name="nombre" placeholder="Nombre de zona" required>
             <input type="text" name="ubicacion" placeholder="Ubicación" required>
             <input type="number" name="capacidadTotal" placeholder="Capacidad total" required>
-            <input type="number" name="capacidadOcupada" placeholder="Ocupación actual" value="0" required>
             <input type="number" step="0.1" name="tarifaHora" placeholder="Tarifa/hora" required>
             <button type="submit" class="btn btn-primario">Agregar zona</button>
         </form>
@@ -44,7 +43,7 @@
                     <td>
                         <form action="${pageContext.request.contextPath}/admin/zonas" method="post" class="form-linea">
                             <input type="hidden" name="accion" value="eliminar">
-                            <input type="hidden" name="id" value="${zona.id}">
+                            <input type="hidden" name="id" value="${zona.zonaId}">
                             <button type="submit" class="btn btn-peligro btn-chico">Eliminar</button>
                         </form>
                     </td>

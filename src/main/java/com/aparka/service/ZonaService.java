@@ -19,13 +19,10 @@ public class ZonaService {
         return zonaDAO.listarOrdenadasPorFlujo();
     }
 
-    public void registrarIngresoVehiculo(int zonaId) throws SQLException {
-        zonaDAO.ajustarOcupacion(zonaId, +1);
-    }
-
-    public void registrarSalidaVehiculo(int zonaId) throws SQLException {
-        zonaDAO.ajustarOcupacion(zonaId, -1);
-    }
+    // Nota: ya no existe un contador manual de ocupación (ajustarOcupacion).
+    // Ahora la ocupación se calcula en vivo contando filas de Entrada con
+    // TieneSalida = 0 (ver ZonaDAO.listarTodas), así que siempre refleja
+    // el estado real de la tabla Entrada sin necesidad de sincronizar un número aparte.
 
     public boolean crearZona(Zona z) throws SQLException {
         return zonaDAO.insertar(z);

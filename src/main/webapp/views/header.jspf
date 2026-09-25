@@ -1,10 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <nav class="navbar">
-    <div class="navbar-brand">🅿️ Aparka</div>
+    <div class="navbar-brand">
+        🅿️ Aparka
+        <c:if test="${not empty sessionScope.usuario}">
+            <span class="navbar-bienvenida">¡Hola, ${sessionScope.usuario.nombres}!</span>
+        </c:if>
+    </div>
     <ul class="navbar-links">
         <c:choose>
             <c:when test="${sessionScope.rol == 'ADMIN'}">
                 <li><a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/entradas">Entradas</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/salidas">Salidas</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/flujo">Flujo vehicular</a></li>
                 <li><a href="${pageContext.request.contextPath}/admin/zonas">Gestionar zonas</a></li>
             </c:when>
             <c:when test="${sessionScope.rol == 'USUARIO'}">

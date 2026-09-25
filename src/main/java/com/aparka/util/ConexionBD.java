@@ -10,9 +10,10 @@ import java.sql.SQLException;
  */
 public class ConexionBD {
 
-    private static final String URL = "jdbc:mysql://localhost:3307/aparka_db?useSSL=false&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3307/Parking?useSSL=false&serverTimezone=UTC";
     private static final String USUARIO = "root";
     private static final String PASSWORD = "123456";
+    // Recuerda ajustar el puerto (3306/3307) y la contraseña según tu configuración local.
 
     public static Connection obtenerConexion() throws SQLException {
         try {

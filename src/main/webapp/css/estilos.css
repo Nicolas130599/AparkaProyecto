@@ -32,6 +32,7 @@ body {
     animation: deslizarArriba 0.5s ease;
 }
 .navbar-brand { font-size: 1.3rem; font-weight: bold; }
+.navbar-bienvenida { font-size: .85rem; font-weight: 400; opacity: .85; margin-left: 14px; }
 .navbar-links { list-style: none; display: flex; gap: 24px; }
 .navbar-links a {
     color: var(--crema-claro);
@@ -82,7 +83,7 @@ body {
 /* ---------- FORMULARIOS ---------- */
 .form-aparka { display: flex; flex-direction: column; gap: 6px; text-align: left; }
 .form-aparka label { font-size: 0.85rem; color: var(--azul-petroleo-oscuro); margin-top: 8px; }
-.form-aparka input {
+.form-aparka input, .form-aparka select {
     padding: 10px 12px;
     border: 1px solid #d8cfb8;
     border-radius: 8px;
@@ -90,7 +91,7 @@ body {
     font-size: 0.95rem;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-.form-aparka input:focus {
+.form-aparka input:focus, .form-aparka select:focus {
     outline: none;
     border-color: var(--azul-petroleo);
     box-shadow: 0 0 0 3px rgba(27, 75, 90, 0.15);

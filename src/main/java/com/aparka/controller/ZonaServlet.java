@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-/** Muestra al usuario el mapa/listado de zonas con su nivel de flujo vehicular. */
+/** Muestra al usuario el listado de zonas con su nivel de flujo vehicular (calculado en vivo). */
 @WebServlet("/zonas")
 public class ZonaServlet extends HttpServlet {
 
