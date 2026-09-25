@@ -68,8 +68,8 @@ La base de datos `Parking` incluye 9 tablas (`CentroComercial`, `Rol`, `UsuarioS
 
 | Integrante | Rol |
 |---|---|
-| _Tu nombre_ | Frontend / Diseño UI-UX |
-| _Nombre del compañero_ | Backend / Base de datos |
+| Nicolas| Frontend / Diseño UI-UX |
+| Wilbor | Backend / Base de datos |
 
 ## Instalación y ejecución local
 
