@@ -1,0 +1,42 @@
+[33mcommit 24a90d1802abda6f0f24b3ecf64757e55e9de4dd[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Nicolas130599 <starnet2015xd@outlook.com>
+Date:   Fri Sep 25 17:11:46 2026 -0500
+
+    Update team member names in README
+
+[33mcommit 887da8517a195b4bdde1661e3c7a6de0181b2537[m
+Author: Nicolás130599 <starnet2015xd@outlook.com>
+Date:   Fri Sep 25 17:09:33 2026 -0500
+
+    Agregar capturas de pantalla al README
+
+[33mcommit 200686ac988644fddbc6860a25d388e460e627af[m
+Merge: 1793631 756693e
+Author: Nicolás130599 <starnet2015xd@outlook.com>
+Date:   Fri Sep 25 16:58:33 2026 -0500
+
+    Resolver conflicto: mantener README actualizado
+
+[33mcommit 179363131e96ce267845ad839112ea0a1d9e2e0e[m
+Author: Nicolás130599 <starnet2015xd@outlook.com>
+Date:   Fri Sep 25 16:55:38 2026 -0500
+
+    Actualizar README con descripción completa del proyecto
+
+[33mcommit 756693e0aed3f31a181bdb3dd054d2c09f402ff6[m
+Author: Nicolas130599 <starnet2015xd@outlook.com>
+Date:   Fri Sep 25 11:11:13 2026 -0500
+
+    Delete README.md
+
+[33mcommit 12aaa168c622c4761c1cb5a314fbc1e3ea618f34[m
+Author: Nicolás130599 <starnet2015xd@outlook.com>
+Date:   Fri Sep 25 11:06:26 2026 -0500
+
+    Agregar Fecha, Hora, N Ticket y Tipo de Cliente en Registrar Entrada
+
+[33mcommit babfe05d3f51b5e963c81aee249afb203b16fbeb[m
+Author: Nicolás130599 <starnet2015xd@outlook.com>
+Date:   Wed Sep 16 15:21:18 2026 -0500
+
+    Primer commit: proyecto Aparka

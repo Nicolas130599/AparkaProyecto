@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
-@WebServlet("/login")
+//@WebServlet(name = "LoginServlet", urlPatterns = {"/LoginServlet"})
+@WebServlet("/login") // estoy modificano por la linea anterior
 public class LoginServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);

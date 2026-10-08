@@ -57,15 +57,17 @@ public class RegistroServlet extends HttpServlet {
 
         UsuarioSistema usuario = new UsuarioSistema();
         usuario.setUsername(username);
-        usuario.setPasswordHash(contrasena);
+        // NOTA: Ya no asignamos directamente el hash aquí. 
+        // Pasamos la contraseña en texto plano al DAO para que aplique jBCrypt de forma segura.
         usuario.setNombres(nombres);
         usuario.setEmail(email);
         usuario.setCentroComercialId(1); // único centro comercial en esta versión
 
         try {
-            boolean ok = usuarioDAO.registrar(usuario);
+            // Invocamos el método del DAO pasando el objeto y la contraseña plana para encriptarla
+            boolean ok = usuarioDAO.registrar(usuario, contrasena);
             if (ok) {
-                log.info("Nuevo usuario registrado: username='{}'", username);
+                log.info("Nuevo usuario registrado con éxito y contraseña cifrada: username='{}'", username);
                 resp.sendRedirect(req.getContextPath() + "/login?registrado=1");
             } else {
                 log.warn("Registro fallido para username='{}'", username);
@@ -78,4 +80,3 @@ public class RegistroServlet extends HttpServlet {
         }
     }
 }
-
