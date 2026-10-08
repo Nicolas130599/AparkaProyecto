@@ -36,7 +36,7 @@
             <version>3.0.1</version>
         </dependency>
 
-        <!-- Conector MySQL (cambia según tu motor de BD) -->
+        <!-- Conector MySQL / MariaDB -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -44,31 +44,38 @@
         </dependency>
 
         <!-- ============================================================
-             LIBRERÍAS DE APOYO A LA CODIFICACIÓN (requeridas por la rúbrica)
+             LIBRERÍAS DE APOYO A LA CODIFICACIÓN Y SEGURIDAD (Rúbrica UTP)
              ============================================================ -->
 
-        <!-- Google Guava: validaciones defensivas (Preconditions) en la capa de servicio/DAO -->
+        <!-- jBCrypt: Encriptación segura de contraseñas -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+        <!-- Google Guava: validaciones defensivas (Preconditions) -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.3.1-jre</version>
         </dependency>
 
-        <!-- Apache Commons Lang3: utilidades de String (StringUtils) para validar formularios -->
+        <!-- Apache Commons Lang3: utilidades de String (StringUtils) -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.17.0</version>
         </dependency>
 
-        <!-- Apache Commons Validator: validación de formato de correo electrónico en el backend -->
+        <!-- Apache Commons Validator: validación de formato de correo -->
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>1.9.0</version>
         </dependency>
 
-        <!-- Apache POI: generación del reporte Excel de flujo vehicular (dashboard admin) -->
+        <!-- Apache POI: generación de reportes Excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -80,7 +87,7 @@
             <version>5.3.0</version>
         </dependency>
 
-        <!-- Logback + SLF4J: registro de eventos de seguridad (logins fallidos, cambios de contraseña, CRUD de zonas) -->
+        <!-- Logback + SLF4J: registro de eventos de seguridad -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

@@ -2,36 +2,47 @@ package com.aparka.dao;
 
 import com.aparka.model.UsuarioSistema;
 import com.aparka.util.ConexionBD;
+import com.aparka.util.PasswordUtils;
 
 import java.sql.*;
 
 public class UsuarioSistemaDAO {
 
-    /** Autentica contra UsuarioSistema, trayendo el nombre del Rol con un JOIN. */
-    public UsuarioSistema autenticar(String username, String password) throws SQLException {
+    /** Autentica contra UsuarioSistema verificando el hash de la contraseña con jBCrypt. */
+    public UsuarioSistema autenticar(String username, String passwordPlana) throws SQLException {
+        // Obtenemos al usuario por su username (sin comparar el password en el SQL)
         String sql = "SELECT u.*, r.NombreRol " +
                 "FROM UsuarioSistema u " +
                 "JOIN Rol r ON u.RolId = r.RolId " +
-                "WHERE u.Username = ? AND u.PasswordHash = ? AND u.Activo = 1";
+                "WHERE u.Username = ? AND u.Activo = 1";
+                
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
-            ps.setString(2, password); // texto plano por simplicidad académica (ver README)
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapear(rs);
+                if (rs.next()) {
+                    String passwordHashBD = rs.getString("PasswordHash");
+                    // Verificamos si la contraseña plana coincide con el hash almacenado
+                    if (passwordHashBD != null && PasswordUtils.verificar(passwordPlana, passwordHashBD)) {
+                        return mapear(rs);
+                    }
+                }
             }
         }
-        return null;
+        return null; // Credenciales inválidas
     }
 
-    /** Registra un nuevo usuario con rol USUARIO (RolId = 2) por defecto. */
-    public boolean registrar(UsuarioSistema u) throws SQLException {
+    /** Registra un nuevo usuario encriptando su contraseña con jBCrypt. */
+    public boolean registrar(UsuarioSistema u, String passwordPlana) throws SQLException {
+        // Encriptamos la contraseña antes de guardarla para cumplir con la seguridad de la rúbrica
+        String passwordSegura = PasswordUtils.encriptar(passwordPlana);
+
         String sql = "INSERT INTO UsuarioSistema (Username, PasswordHash, Nombres, Email, RolId, CentroComercialId) " +
                 "VALUES (?, ?, ?, ?, 2, ?)";
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, u.getUsername());
-            ps.setString(2, u.getPasswordHash());
+            ps.setString(2, passwordSegura); // Guardamos el hash seguro
             ps.setString(3, u.getNombres());
             ps.setString(4, u.getEmail());
             ps.setInt(5, u.getCentroComercialId() != null ? u.getCentroComercialId() : 1);
@@ -65,12 +76,15 @@ public class UsuarioSistemaDAO {
         }
     }
 
-    /** Actualiza la contraseña de un usuario ya verificado. */
-    public boolean actualizarPassword(String username, String nuevaContrasena) throws SQLException {
+    /** Actualiza la contraseña de un usuario ya verificado, encriptando la nueva clave. */
+    public boolean actualizarPassword(String username, String nuevaContrasenaPlana) throws SQLException {
+        // Encriptamos la nueva contraseña
+        String passwordSegura = PasswordUtils.encriptar(nuevaContrasenaPlana);
+
         String sql = "UPDATE UsuarioSistema SET PasswordHash = ? WHERE Username = ?";
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, nuevaContrasena);
+            ps.setString(1, passwordSegura);
             ps.setString(2, username);
             return ps.executeUpdate() > 0;
         }
