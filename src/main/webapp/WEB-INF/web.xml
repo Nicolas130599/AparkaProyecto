@@ -8,8 +8,8 @@
     <display-name>Aparka</display-name>
 
     <welcome-file-list>
-        <welcome-file>login</welcome-file>
-    </welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+</welcome-file-list>
 
     <!-- Los Servlets y el Filter ya están anotados con @WebServlet / @WebFilter,
          así que no requieren declaración manual aquí (Servlet 3.0+). -->
