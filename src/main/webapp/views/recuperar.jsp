@@ -15,18 +15,15 @@
         <c:if test="${not empty error}">
             <div class="alerta alerta-error">${error}</div>
         </c:if>
+        <c:if test="${not empty mensaje}">
+            <div class="alerta alerta-exito" style="color: #2e7d32; background: #e8f5e9; padding: 10px; border-radius: 4px; margin-bottom: 15px;">${mensaje}</div>
+        </c:if>
 
         <form action="${pageContext.request.contextPath}/recuperar" method="post" class="form-aparka">
-            <label for="username">Usuario</label>
-            <input type="text" id="username" name="username" required autofocus>
+            <label for="identificador">Usuario o Correo electrónico</label>
+            <input type="text" id="identificador" name="identificador" required autofocus placeholder="Ej. Wleon o correo@gmail.com">
 
-            <label for="email">Correo registrado</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="nuevaContrasena">Nueva contraseña</label>
-            <input type="password" id="nuevaContrasena" name="nuevaContrasena" required minlength="6">
-
-            <button type="submit" class="btn btn-primario">Actualizar contraseña</button>
+            <button type="submit" class="btn btn-primario" style="margin-top: 15px;">Enviar nueva contraseña</button>
         </form>
 
         <p class="enlace-secundario">
