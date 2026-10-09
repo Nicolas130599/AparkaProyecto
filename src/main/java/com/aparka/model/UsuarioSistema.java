@@ -6,6 +6,8 @@ public class UsuarioSistema {
     private String passwordHash;
     private String nombres;
     private String email;
+    private String documento;
+    private String telefono;
     private int rolId;
     private String nombreRol; // se llena al hacer el JOIN con Rol
     private Integer centroComercialId;
@@ -26,6 +28,12 @@ public class UsuarioSistema {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getDocumento() { return documento; }
+    public void setDocumento(String documento) { this.documento = documento; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
     public int getRolId() { return rolId; }
     public void setRolId(int rolId) { this.rolId = rolId; }

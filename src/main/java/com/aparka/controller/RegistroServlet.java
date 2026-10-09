@@ -33,11 +33,16 @@ public class RegistroServlet extends HttpServlet {
         String email = req.getParameter("email");
         String contrasena = req.getParameter("contrasena");
         String nombres = req.getParameter("nombres");
+        
+        // CAPTURANDO DOCUMENTO Y TELÉFONO DESDE EL FORMULARIO
+        String documento = req.getParameter("documento");
+        String telefono = req.getParameter("telefono");
 
         // Validación en el backend con Guava + Apache Commons (no confiar solo en el HTML)
         try {
             ValidacionUtil.requerirTextoNoVacio(username, "Usuario");
             ValidacionUtil.requerirTextoNoVacio(nombres, "Nombre completo");
+            ValidacionUtil.requerirTextoNoVacio(documento, "Documento de identidad");
 
             if (!ValidacionUtil.esCorreoValido(email)) {
                 req.setAttribute("error", "El correo ingresado no tiene un formato válido.");
@@ -57,14 +62,17 @@ public class RegistroServlet extends HttpServlet {
 
         UsuarioSistema usuario = new UsuarioSistema();
         usuario.setUsername(username);
-        // NOTA: Ya no asignamos directamente el hash aquí. 
-        // Pasamos la contraseña en texto plano al DAO para que aplique jBCrypt de forma segura.
         usuario.setNombres(nombres);
         usuario.setEmail(email);
+        
+        // ASIGNANDO DOCUMENTO Y TELÉFONO AL OBJETO
+        usuario.setDocumento(documento);
+        usuario.setTelefono(telefono);
+        
         usuario.setCentroComercialId(1); // único centro comercial en esta versión
 
         try {
-            // Invocamos el método del DAO pasando el objeto y la contraseña plana para encriptarla
+            // Invocamos el método del DAO pasando el objeto y la contraseña plana para encriptarla con jBCrypt
             boolean ok = usuarioDAO.registrar(usuario, contrasena);
             if (ok) {
                 log.info("Nuevo usuario registrado con éxito y contraseña cifrada: username='{}'", username);
@@ -76,7 +84,25 @@ public class RegistroServlet extends HttpServlet {
             }
         } catch (SQLException e) {
             log.error("Error de BD al registrar username='{}'", username, e);
-            throw new ServletException("Error al registrar usuario", e);
+            
+            // Detección inteligente de campos duplicados (Username, Email, Documento)
+            String mensajeError = "Error al registrar usuario en la base de datos.";
+            String errorMsg = e.getMessage().toLowerCase();
+            
+            if (errorMsg.contains("duplicate entry")) {
+                if (errorMsg.contains("username")) {
+                    mensajeError = "El nombre de usuario ya se encuentra registrado. Por favor, elige otro.";
+                } else if (errorMsg.contains("email")) {
+                    mensajeError = "El correo electrónico ingresado ya está registrado.";
+                } else if (errorMsg.contains("documento")) {
+                    mensajeError = "El número de documento ingresado ya está registrado.";
+                } else {
+                    mensajeError = "Uno de los datos ingresados (usuario, correo o documento) ya existe en el sistema.";
+                }
+            }
+
+            req.setAttribute("error", mensajeError);
+            req.getRequestDispatcher("/views/registro.jsp").forward(req, resp);
         }
     }
 }

@@ -10,7 +10,6 @@ public class UsuarioSistemaDAO {
 
     /** Autentica contra UsuarioSistema verificando el hash de la contraseña con jBCrypt. */
     public UsuarioSistema autenticar(String username, String passwordPlana) throws SQLException {
-        // Obtenemos al usuario por su username (sin comparar el password en el SQL)
         String sql = "SELECT u.*, r.NombreRol " +
                 "FROM UsuarioSistema u " +
                 "JOIN Rol r ON u.RolId = r.RolId " +
@@ -22,30 +21,30 @@ public class UsuarioSistemaDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String passwordHashBD = rs.getString("PasswordHash");
-                    // Verificamos si la contraseña plana coincide con el hash almacenado
                     if (passwordHashBD != null && PasswordUtils.verificar(passwordPlana, passwordHashBD)) {
                         return mapear(rs);
                     }
                 }
             }
         }
-        return null; // Credenciales inválidas
+        return null;
     }
 
     /** Registra un nuevo usuario encriptando su contraseña con jBCrypt. */
     public boolean registrar(UsuarioSistema u, String passwordPlana) throws SQLException {
-        // Encriptamos la contraseña antes de guardarla para cumplir con la seguridad de la rúbrica
         String passwordSegura = PasswordUtils.encriptar(passwordPlana);
 
-        String sql = "INSERT INTO UsuarioSistema (Username, PasswordHash, Nombres, Email, RolId, CentroComercialId) " +
-                "VALUES (?, ?, ?, ?, 2, ?)";
+        String sql = "INSERT INTO UsuarioSistema (Username, PasswordHash, Nombres, Email, Documento, Telefono, RolId, CentroComercialId) " +
+                "VALUES (?, ?, ?, ?, ?, ?, 2, ?)";
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, u.getUsername());
-            ps.setString(2, passwordSegura); // Guardamos el hash seguro
+            ps.setString(2, passwordSegura);
             ps.setString(3, u.getNombres());
             ps.setString(4, u.getEmail());
-            ps.setInt(5, u.getCentroComercialId() != null ? u.getCentroComercialId() : 1);
+            ps.setString(5, u.getDocumento());
+            ps.setString(6, u.getTelefono());
+            ps.setInt(7, u.getCentroComercialId() != null ? u.getCentroComercialId() : 1);
             return ps.executeUpdate() > 0;
         }
     }
@@ -63,7 +62,24 @@ public class UsuarioSistemaDAO {
         return null;
     }
 
-    /** Verifica que el username y el email coincidan con un usuario activo (validación previa al reseteo). */
+    /** Busca un usuario activo por su nombre de usuario o su correo electrónico para la recuperación. */
+    public UsuarioSistema buscarPorUsernameOEmail(String identificador) throws SQLException {
+        String sql = "SELECT u.*, r.NombreRol FROM UsuarioSistema u " +
+                     "JOIN Rol r ON u.RolId = r.RolId " +
+                     "WHERE (u.Username = ? OR u.Email = ?) AND u.Activo = 1";
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, identificador);
+            ps.setString(2, identificador);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapear(rs);
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean verificarUsuarioYCorreo(String username, String email) throws SQLException {
         String sql = "SELECT UsuarioId FROM UsuarioSistema WHERE Username = ? AND Email = ? AND Activo = 1";
         try (Connection con = ConexionBD.obtenerConexion();
@@ -76,9 +92,7 @@ public class UsuarioSistemaDAO {
         }
     }
 
-    /** Actualiza la contraseña de un usuario ya verificado, encriptando la nueva clave. */
     public boolean actualizarPassword(String username, String nuevaContrasenaPlana) throws SQLException {
-        // Encriptamos la nueva contraseña
         String passwordSegura = PasswordUtils.encriptar(nuevaContrasenaPlana);
 
         String sql = "UPDATE UsuarioSistema SET PasswordHash = ? WHERE Username = ?";
@@ -96,6 +110,8 @@ public class UsuarioSistemaDAO {
         u.setUsername(rs.getString("Username"));
         u.setNombres(rs.getString("Nombres"));
         u.setEmail(rs.getString("Email"));
+        u.setDocumento(rs.getString("Documento"));
+        u.setTelefono(rs.getString("Telefono"));
         u.setRolId(rs.getInt("RolId"));
         u.setNombreRol(rs.getString("NombreRol"));
         int centro = rs.getInt("CentroComercialId");

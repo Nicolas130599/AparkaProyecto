@@ -43,9 +43,12 @@
             <version>8.3.0</version>
         </dependency>
 
-        <!-- ============================================================
-             LIBRERÍAS DE APOYO A LA CODIFICACIÓN Y SEGURIDAD (Rúbrica UTP)
-             ============================================================ -->
+        <!-- Jakarta Mail para envío de correos (Tomcat 11 / Jakarta EE 10) -->
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.3</version>
+        </dependency>
 
         <!-- jBCrypt: Encriptación segura de contraseñas -->
         <dependency>
