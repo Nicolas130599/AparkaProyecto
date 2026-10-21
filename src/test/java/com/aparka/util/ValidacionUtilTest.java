@@ -79,4 +79,24 @@ class ValidacionUtilTest {
         assertThrows(IllegalArgumentException.class,
                 () -> ValidacionUtil.esPasswordValida("cualquiera", 0));
     }
+
+    // ---------- esTelefonoValido ----------
+
+    @ParameterizedTest
+    @ValueSource(strings = {"987654321", "+51 987 654 321", "(01) 445-6789"})
+    void esTelefonoValido_conFormatosCorrectos_devuelveTrue(String telefono) {
+        assertTrue(ValidacionUtil.esTelefonoValido(telefono));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"12345", "abc123456", "987654321; DROP", "1234567890123456789012"})
+    void esTelefonoValido_conFormatosIncorrectos_devuelveFalse(String telefono) {
+        assertFalse(ValidacionUtil.esTelefonoValido(telefono));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    void esTelefonoValido_conNuloOVacio_devuelveFalse(String telefono) {
+        assertFalse(ValidacionUtil.esTelefonoValido(telefono));
+    }
 }

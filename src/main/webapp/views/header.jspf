@@ -3,7 +3,17 @@
     <div class="navbar-brand">
         🅿️ Aparka
         <c:if test="${not empty sessionScope.usuario}">
-            <span class="navbar-bienvenida">¡Hola, ${sessionScope.usuario.nombres}!</span>
+            <a href="${pageContext.request.contextPath}/perfil" class="navbar-perfil" title="Mi perfil">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.usuario.fotoPerfil}">
+                        <img class="navbar-avatar" alt="" src="${pageContext.request.contextPath}/perfil/foto">
+                    </c:when>
+                    <c:otherwise>
+                        <span class="navbar-avatar navbar-avatar-iniciales"><c:out value="${sessionScope.usuario.iniciales}"/></span>
+                    </c:otherwise>
+                </c:choose>
+            </a>
+            <span class="navbar-bienvenida">¡Hola, <c:out value="${sessionScope.usuario.nombres}"/>!</span>
         </c:if>
     </div>
     <ul class="navbar-links">
@@ -13,7 +23,8 @@
                 <li><a href="${pageContext.request.contextPath}/admin/entradas">Entradas</a></li>
                 <li><a href="${pageContext.request.contextPath}/admin/salidas">Salidas</a></li>
                 <li><a href="${pageContext.request.contextPath}/admin/flujo">Flujo vehicular</a></li>
-                <li><a href="${pageContext.request.contextPath}/admin/zonas">Gestionar zonas</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/zonas">Zonas y flujo</a></li>
+                <li><a href="${pageContext.request.contextPath}/perfil">Mi perfil</a></li>
             </c:when>
             <c:when test="${sessionScope.rol == 'USUARIO'}">
                 <li><a href="${pageContext.request.contextPath}/zonas">Zonas</a></li>

@@ -47,7 +47,7 @@ public class ZonaDAO {
     }
 
     public boolean insertar(Zona z) throws SQLException {
-        String sql = "INSERT INTO Zona (CentroComercialId, Nombre, Ubicacion, CapacidadTotal, TarifaHora) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO Zona (CentroComercialId, Nombre, Ubicacion, CapacidadTotal, TarifaHora, Nivel, PlanoX, PlanoY) VALUES (?,?,?,?,?,?,?,?)";
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, z.getCentroComercialId());
@@ -55,19 +55,25 @@ public class ZonaDAO {
             ps.setString(3, z.getUbicacion());
             ps.setInt(4, z.getCapacidadTotal());
             ps.setDouble(5, z.getTarifaHora());
+            ps.setString(6, z.getNivel());
+            ps.setObject(7, z.getPlanoX());
+            ps.setObject(8, z.getPlanoY());
             return ps.executeUpdate() > 0;
         }
     }
 
     public boolean actualizar(Zona z) throws SQLException {
-        String sql = "UPDATE Zona SET Nombre=?, Ubicacion=?, CapacidadTotal=?, TarifaHora=? WHERE ZonaId=?";
+        String sql = "UPDATE Zona SET Nombre=?, Ubicacion=?, CapacidadTotal=?, TarifaHora=?, Nivel=?, PlanoX=?, PlanoY=? WHERE ZonaId=?";
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, z.getNombre());
             ps.setString(2, z.getUbicacion());
             ps.setInt(3, z.getCapacidadTotal());
             ps.setDouble(4, z.getTarifaHora());
-            ps.setInt(5, z.getZonaId());
+            ps.setString(5, z.getNivel());
+            ps.setObject(6, z.getPlanoX());
+            ps.setObject(7, z.getPlanoY());
+            ps.setInt(8, z.getZonaId());
             return ps.executeUpdate() > 0;
         }
     }
@@ -90,6 +96,18 @@ public class ZonaDAO {
         z.setCapacidadTotal(rs.getInt("CapacidadTotal"));
         z.setCapacidadOcupada(rs.getInt("ocupados"));
         z.setTarifaHora(rs.getDouble("TarifaHora"));
+        // Columnas de ubicación en plano (las crea InicializadorEsquema al iniciar; si faltan, no rompen el listado)
+        try {
+            z.setNivel(rs.getString("Nivel"));
+            double x = rs.getDouble("PlanoX");
+            Double px = rs.wasNull() ? null : x;
+            double y = rs.getDouble("PlanoY");
+            Double py = rs.wasNull() ? null : y;
+            z.setPlanoX(px);
+            z.setPlanoY(py);
+        } catch (SQLException e) {
+            // columnas aún no creadas
+        }
         return z;
     }
 }

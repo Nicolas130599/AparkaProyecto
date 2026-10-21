@@ -26,8 +26,38 @@
             <label for="username">Usuario</label>
             <input type="text" id="username" name="username" required autofocus>
 
-            <label for="contrasena">Contraseña</label>
-            <input type="password" id="contrasena" name="contrasena" required>
+
+<label for="contrasena">Contraseña</label>
+
+<div class="login-password-wrapper">
+    <input type="password"
+           id="contrasena"
+           name="contrasena"
+           autocomplete="current-password"
+           required>
+
+    <button type="button"
+            class="login-password-toggle"
+            id="toggleContrasena"
+            aria-label="Mostrar contraseña"
+            aria-pressed="false"
+            aria-controls="contrasena"
+            title="Mostrar contraseña">
+        <svg viewBox="0 0 24 24"
+             width="20"
+             height="20"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.8"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true">
+            <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+    </button>
+</div>
+
 
             <button type="submit" class="btn btn-primario">Ingresar</button>
         </form>
@@ -41,5 +71,26 @@
         </p>
     </div>
     <script src="${pageContext.request.contextPath}/js/animaciones.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const campo = document.getElementById("contrasena");
+    const boton = document.getElementById("toggleContrasena");
+
+    if (!campo || !boton) return;
+
+    boton.addEventListener("click", function () {
+        const mostrar = campo.type === "password";
+
+        campo.type = mostrar ? "text" : "password";
+        boton.setAttribute("aria-pressed", String(mostrar));
+        boton.setAttribute(
+            "aria-label",
+            mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+        );
+        boton.title = mostrar ? "Ocultar contraseña" : "Mostrar contraseña";
+    });
+});
+</script>
 </body>
 </html>

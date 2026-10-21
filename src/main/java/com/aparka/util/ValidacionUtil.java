@@ -39,4 +39,13 @@ public class ValidacionUtil {
         Preconditions.checkArgument(largoMinimo > 0, "El largo mínimo debe ser mayor a 0.");
         return StringUtils.isNotBlank(password) && password.length() >= largoMinimo;
     }
+
+    /** Teléfono: solo dígitos, espacios, +, -, paréntesis; entre 7 y 15 dígitos (ej. "+51 987 654 321"). */
+    public static boolean esTelefonoValido(String telefono) {
+        if (StringUtils.isBlank(telefono)) return false;
+        String t = telefono.trim();
+        if (t.length() > 20 || !t.matches("[+0-9 ()\\-]+")) return false;
+        long digitos = t.chars().filter(Character::isDigit).count();
+        return digitos >= 7 && digitos <= 15;
+    }
 }

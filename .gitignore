@@ -9,3 +9,20 @@ target/
 # Sistema
 .DS_Store
 Thumbs.db
+
+
+
+# Respaldos y archivos temporales
+*.bak
+*.backup
+*.tmp
+*.log
+
+# Archivos locales con credenciales
+.env
+.env.*
+!.env.example
+
+# Configuraciones privadas
+secrets.properties
+credentials.properties

@@ -8,6 +8,9 @@ public class Zona {
     private int capacidadTotal;
     private int capacidadOcupada; // se calcula, no se guarda directo en la tabla Zona
     private double tarifaHora;
+    private String nivel;   // plano al que pertenece: P1..P7 (pisos) o S1..S3 (sótanos); null si no tiene
+    private Double planoX;  // posición sobre el plano, en % del ancho (0-100)
+    private Double planoY;  // posición sobre el plano, en % del alto (0-100)
 
     public Zona() {}
 
@@ -43,4 +46,16 @@ public class Zona {
 
     public double getTarifaHora() { return tarifaHora; }
     public void setTarifaHora(double tarifaHora) { this.tarifaHora = tarifaHora; }
+
+    public String getNivel() { return nivel; }
+    public void setNivel(String nivel) { this.nivel = nivel; }
+
+    public Double getPlanoX() { return planoX; }
+    public void setPlanoX(Double planoX) { this.planoX = planoX; }
+
+    public Double getPlanoY() { return planoY; }
+    public void setPlanoY(Double planoY) { this.planoY = planoY; }
+
+    /** true si la zona ya fue ubicada sobre un plano. */
+    public boolean isTienePosicion() { return nivel != null && planoX != null && planoY != null; }
 }

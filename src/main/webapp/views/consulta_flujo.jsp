@@ -47,7 +47,7 @@
     </div>
 
     <div class="tabla-wrapper animar-entrada">
-        <table class="tabla-apparka">
+        <table class="tabla-aparka">
             <thead>
             <tr>
                 <th>Ticket</th>

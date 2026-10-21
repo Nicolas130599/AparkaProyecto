@@ -166,3 +166,750 @@ body {
 @keyframes aparecer {
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ---------- PERFIL DE USUARIO ---------- */
+.contenedor-medio { max-width: 960px; }
+
+.perfil-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start; }
+.perfil-principal { display: flex; flex-direction: column; gap: 24px; }
+
+.perfil-lateral { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.perfil-avatar-wrap { margin-bottom: 8px; }
+.perfil-avatar {
+    width: 148px; height: 148px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--crema-claro);
+    box-shadow: 0 0 0 2px var(--azul-petroleo), var(--sombra);
+    background: var(--crema);
+}
+.perfil-avatar-iniciales {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; font-weight: 600; letter-spacing: 2px;
+    color: var(--crema-claro);
+    background: linear-gradient(135deg, var(--azul-petroleo) 0%, var(--azul-petroleo-oscuro) 100%);
+}
+.perfil-nombre { color: var(--azul-petroleo-oscuro); font-size: 1.15rem; }
+.perfil-usuario { color: #6b7d82; font-size: 0.88rem; margin-bottom: 10px; }
+.rol-badge {
+    display: inline-block; padding: 3px 12px; border-radius: 999px;
+    background: var(--azul-petroleo); color: var(--crema-claro);
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase;
+}
+
+.perfil-foto-form { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+.perfil-foto-form label.btn { margin-top: 0; }
+.perfil-acciones-foto { display: flex; gap: 8px; }
+.perfil-acciones-foto .btn-primario { margin-top: 0; }
+.perfil-acciones-foto[hidden], .perfil-foto-form [hidden], .bloque-confirmar[hidden], .error-campo[hidden] { display: none; }
+.btn-neutro { background: #e4dcc6; color: var(--texto); }
+.btn-neutro:hover { background: #d8cfb8; }
+.enlace-quitar {
+    background: none; border: none; cursor: pointer;
+    color: var(--alto); font-size: 0.85rem; text-decoration: underline; margin-top: 4px;
+}
+.perfil-ayuda { color: #6b7d82; font-size: 0.8rem; line-height: 1.45; margin-top: 8px; text-align: left; }
+.perfil-lateral .perfil-ayuda { text-align: center; }
+
+.perfil-seccion-titulo {
+    color: var(--azul-petroleo-oscuro); font-size: 1.05rem;
+    padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #eee0c3;
+}
+.fila-solo-lectura { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-aparka input:disabled { background: #f0e9d6; color: #7a868a; cursor: not-allowed; }
+.bloque-confirmar { background: #f7efd9; border-left: 4px solid var(--acento); border-radius: 8px; padding: 6px 12px 12px; margin: 6px 0; }
+.error-campo { color: var(--alto); font-size: 0.85rem; margin-top: 4px; }
+
+.input-grupo-password { position: relative; display: flex; align-items: center; }
+.input-grupo-password input { width: 100%; padding-right: 40px; }
+.btn-toggle-password { position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 1.1rem; }
+
+.form-aparka .btn-primario { align-self: flex-start; }
+
+/* ---------- NAVBAR: avatar del usuario ---------- */
+.navbar-brand { display: flex; align-items: center; }
+.navbar-perfil { display: inline-flex; margin-left: 16px; text-decoration: none; }
+.navbar-avatar {
+    width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--crema-claro);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.navbar-perfil:hover .navbar-avatar { transform: scale(1.08); border-color: var(--acento); }
+.navbar-avatar-iniciales {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--acento); color: #fff; font-size: 0.8rem; font-weight: 700;
+}
+
+@media (max-width: 760px) {
+    .perfil-layout { grid-template-columns: 1fr; }
+    .fila-solo-lectura { grid-template-columns: 1fr; }
+    .navbar { flex-wrap: wrap; gap: 10px; padding: 12px 18px; }
+}
+
+/* ---------- MAPA DE CALOR ---------- */
+.resumen-calor { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.resumen-item { display: flex; flex-direction: column; gap: 4px; padding: 16px 20px; }
+.resumen-etiqueta { font-size: 0.78rem; color: #6b7d82; text-transform: uppercase; letter-spacing: 0.5px; }
+.resumen-valor { font-size: 1.2rem; color: var(--azul-petroleo-oscuro); }
+.resumen-detalle { font-size: 0.82rem; color: #6b7d82; }
+
+.mapa-calor { border-collapse: separate; border-spacing: 3px; width: 100%; font-size: 0.78rem; text-align: center; }
+.mapa-calor th { color: var(--azul-petroleo-oscuro); font-weight: 600; padding: 4px 2px; }
+.mapa-calor th.mc-zona { text-align: left; white-space: nowrap; padding-right: 12px; font-size: 0.85rem; position: sticky; left: 0; background: var(--crema-claro); }
+.mapa-calor td { min-width: 30px; height: 34px; border-radius: 6px; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.mapa-calor td.calor:hover { transform: scale(1.18); box-shadow: var(--sombra); position: relative; z-index: 1; }
+.mapa-calor .mc-total { color: var(--azul-petroleo-oscuro); font-weight: 600; padding: 0 6px; }
+.mapa-calor tfoot th, .mapa-calor tfoot td { border-top: 1px solid #eee0c3; }
+
+.calor-0 { background: #F1EAD6; color: #8a8f8f; }
+.calor-1 { background: #F4DFA8; color: var(--texto); }
+.calor-2 { background: #E8C26C; color: var(--texto); }
+.calor-3 { background: #DE9A55; color: #fff; }
+.calor-4 { background: #D0734A; color: #fff; }
+.calor-5 { background: #B94A36; color: #fff; }
+
+.calor-leyenda { display: flex; align-items: center; gap: 4px; justify-content: flex-end; margin-top: 12px; font-size: 0.8rem; color: #6b7d82; }
+.calor-leyenda i { display: inline-block; width: 28px; height: 14px; border-radius: 4px; }
+.calor-leyenda span:first-child { margin-right: 4px; }
+.calor-leyenda span:last-child { margin-left: 4px; }
+
+.navbar-links { flex-wrap: wrap; }
+
+/* ---------- GESTIÓN DE ZONAS (vista corporativa) ---------- */
+.contenedor-ancho { max-width: 1180px; }
+.gz-cabecera { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.gz-titulo { color: var(--azul-petroleo-oscuro); font-size: 1.6rem; letter-spacing: .2px; }
+.gz-subtitulo { color: #5d6e73; font-size: .92rem; margin-top: 2px; }
+.gz-filtro { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.gz-filtro label { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; color: #5d6e73; margin-bottom: 3px; }
+.gz-filtro input { padding: 7px 10px; border: 1px solid #d9d2bd; border-radius: 8px; font: inherit; background: #fff; }
+.gz-filtro .btn { margin-top: 0; }
+
+.gz-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.gz-kpi { background: #fff; border: 1px solid #e6dfcb; border-left: 4px solid var(--azul-petroleo); border-radius: 10px; padding: 14px 18px; display: flex; flex-direction: column; gap: 3px; box-shadow: 0 1px 3px rgba(20,54,66,.06); }
+.gz-kpi-etiqueta { font-size: .72rem; text-transform: uppercase; letter-spacing: .6px; color: #5d6e73; }
+.gz-kpi-valor { font-size: 1.7rem; color: var(--azul-petroleo-oscuro); line-height: 1.15; }
+.gz-kpi-texto { font-size: 1.15rem; padding: 6px 0; }
+.gz-kpi-detalle { font-size: .8rem; color: #6b7d82; min-height: 1em; }
+
+.gz-panel { background: #fff; border: 1px solid #e6dfcb; border-radius: 12px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(20,54,66,.06); }
+.gz-panel-cab { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.gz-panel-cab h3 { color: var(--azul-petroleo-oscuro); font-size: 1.05rem; }
+.gz-panel-cab .btn { margin-top: 0; }
+.gz-enlace { color: var(--azul-petroleo); font-size: .85rem; text-decoration: none; font-weight: 600; }
+.gz-enlace:hover { text-decoration: underline; }
+
+.gz-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.gz-tab { padding: 6px 14px; border-radius: 8px; border: 1px solid #d9d2bd; color: var(--azul-petroleo-oscuro); text-decoration: none; font-size: .85rem; font-weight: 600; background: #fbf8ef; }
+.gz-tab:hover { background: #f1ead6; }
+.gz-tab-activo, .gz-tab-activo:hover { background: var(--azul-petroleo); color: var(--crema-claro); border-color: var(--azul-petroleo); }
+.gz-tab-n { margin-left: 6px; padding: 0 6px; border-radius: 999px; background: var(--acento); color: #fff; font-size: .7rem; }
+
+.gz-plano { position: relative; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #f3f3f3; }
+.gz-plano img { display: block; width: 100%; height: auto; }
+.gz-plano-vacio { position: absolute; inset: auto 0 18px 0; margin: 0 auto; width: fit-content; max-width: 90%; background: rgba(255,255,255,.94); border-radius: 8px; padding: 10px 16px; font-size: .85rem; text-align: center; color: var(--azul-petroleo-oscuro); box-shadow: var(--sombra); }
+.gz-pin { position: absolute; width: 0; height: 0; }
+.gz-calor { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+.gz-punto { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--azul-petroleo-oscuro); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+.gz-etiqueta { position: absolute; top: 12px; left: 0; transform: translateX(-50%); white-space: nowrap; background: rgba(255,255,255,.96); color: var(--azul-petroleo-oscuro); font-size: .72rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.gz-calor-n0 { width: 70px; height: 70px; background: radial-gradient(circle, rgba(140,150,155,.35) 0%, transparent 70%); }
+.gz-calor-n1 { width: 92px; height: 92px; background: radial-gradient(circle, rgba(244,223,168,.75) 0%, transparent 70%); }
+.gz-calor-n2 { width: 114px; height: 114px; background: radial-gradient(circle, rgba(232,194,108,.8) 0%, transparent 70%); }
+.gz-calor-n3 { width: 136px; height: 136px; background: radial-gradient(circle, rgba(222,154,85,.85) 0%, transparent 70%); }
+.gz-calor-n4 { width: 158px; height: 158px; background: radial-gradient(circle, rgba(208,115,74,.88) 0%, transparent 70%); }
+.gz-calor-n5 { width: 180px; height: 180px; background: radial-gradient(circle, rgba(185,74,54,.92) 0%, transparent 70%); }
+.gz-leyenda { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; font-size: .78rem; color: #6b7d82; }
+.gz-leyenda-nota { margin-left: auto; }
+.gz-sw { position: static; display: inline-block; width: 26px; height: 12px; border-radius: 3px; transform: none; }
+.gz-sw.gz-calor-n1 { background: #F4DFA8; } .gz-sw.gz-calor-n2 { background: #E8C26C; } .gz-sw.gz-calor-n3 { background: #DE9A55; }
+.gz-sw.gz-calor-n4 { background: #D0734A; } .gz-sw.gz-calor-n5 { background: #B94A36; }
+
+.gz-tabla { box-shadow: none; padding: 0; background: transparent; }
+.gz-tabla .tabla-aparka th { font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; color: #5d6e73; background: #fbf8ef; }
+.gz-tabla .tabla-aparka td { vertical-align: middle; }
+.gz-ubicacion { color: #7a868a; font-size: .8rem; }
+.gz-nivel { display: inline-block; padding: 2px 10px; border-radius: 6px; background: #e9eff1; color: var(--azul-petroleo-oscuro); font-weight: 700; font-size: .78rem; }
+.gz-celda-ocup { min-width: 150px; }
+.gz-celda-ocup small { color: #5d6e73; font-size: .75rem; }
+.gz-barra { height: 7px; background: #eee6d0; border-radius: 999px; overflow: hidden; margin-bottom: 3px; }
+.gz-barra span { display: block; height: 100%; border-radius: 999px; }
+.gz-barra-BAJO { background: var(--bajo); } .gz-barra-MEDIO { background: var(--medio); } .gz-barra-ALTO { background: var(--alto); }
+.gz-estado { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700; letter-spacing: .4px; }
+.gz-estado-BAJO { background: #dcebe3; color: #2c4a3c; } .gz-estado-MEDIO { background: #f6e7c1; color: #7a5a10; } .gz-estado-ALTO { background: #f8d7d0; color: #8a2f1c; }
+.gz-tira { display: flex; gap: 2px; }
+.gz-tira i { display: block; width: 8px; height: 22px; border-radius: 2px; }
+.gz-acciones { white-space: nowrap; }
+.gz-acciones .btn { margin-top: 0; }
+.gz-acciones .form-linea { display: inline; }
+
+.gz-dialogo { border: none; border-radius: 14px; padding: 22px 24px; width: min(640px, 94vw); box-shadow: 0 20px 50px rgba(0,0,0,.3); background: var(--crema-claro); }
+.gz-dialogo::backdrop { background: rgba(14,49,60,.55); }
+.gz-dialogo h3 { color: var(--azul-petroleo-oscuro); margin-bottom: 12px; }
+.gz-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.gz-ayuda { font-size: .8rem; color: #5d6e73; margin: 12px 0 6px; }
+.gz-picker { position: relative; border: 1px solid #d9d2bd; border-radius: 10px; overflow: hidden; cursor: crosshair; background: #f3f3f3; }
+.gz-picker img { display: block; width: 100%; height: auto; }
+.gz-marcador { position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--alto); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--alto), 0 2px 6px rgba(0,0,0,.4); pointer-events: none; }
+.gz-picker [hidden], #pickerBloque[hidden] { display: none; }
+.gz-dialogo-acciones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.gz-dialogo-acciones .btn { margin-top: 0; }
+
+@media (max-width: 760px) { .gz-form-grid { grid-template-columns: 1fr; } .gz-leyenda-nota { margin-left: 0; } }
+
+/* ---------- CAPA DE CAJEROS ---------- */
+.gz-toggle { display: inline-flex; border: 1px solid #d9d2bd; border-radius: 9px; overflow: hidden; background: #fbf8ef; }
+.gz-toggle-op { padding: 7px 18px; color: var(--azul-petroleo-oscuro); text-decoration: none; font-size: .88rem; font-weight: 600; }
+.gz-toggle-op:hover { background: #f1ead6; }
+.gz-toggle-activo, .gz-toggle-activo:hover { background: var(--azul-petroleo); color: var(--crema-claro); }
+.gz-caja { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 3px; background: var(--acento); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.45); }
+.gz-nota { font-size: .78rem; color: #6b7d82; margin-top: 10px; line-height: 1.45; }
+
+
+
+/* ============================================
+   APARKA - AJUSTES VISUALES DE MI PERFIL
+   ============================================ */
+
+.perfil-layout {
+    display: grid;
+    grid-template-columns: minmax(250px, 280px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.perfil-layout > * {
+    min-width: 0;
+}
+
+.perfil-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+/* Tarjeta lateral */
+.perfil-lateral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.perfil-avatar-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.perfil-nombre,
+.perfil-usuario {
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+/* Botones para fotografía */
+.perfil-foto-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.perfil-foto-form .btn-secundario {
+    margin-top: 0;
+}
+
+.perfil-acciones-foto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.perfil-acciones-foto .btn {
+    margin-top: 0;
+}
+
+/* Formularios de información y seguridad */
+#formDatos,
+#formPassword {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+}
+
+#formDatos label,
+#formPassword label {
+    display: block;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+#formDatos input:not([type="hidden"]),
+#formPassword input:not([type="hidden"]) {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+}
+
+/* Usuario y documento en dos columnas */
+.fila-solo-lectura {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.fila-solo-lectura > div {
+    min-width: 0;
+}
+
+.fila-solo-lectura label {
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* Contraseñas y botones de visibilidad */
+.input-grupo-password {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.input-grupo-password input {
+    width: 100%;
+    padding-right: 48px;
+}
+
+.input-grupo-password .btn-toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Botones de guardar */
+#formDatos > .btn-primario,
+#formPassword > .btn-primario {
+    align-self: flex-start;
+    width: auto;
+    min-height: 42px;
+    margin-top: 14px;
+    padding: 10px 20px;
+}
+
+/* Adaptación a pantallas pequeñas */
+@media (max-width: 760px) {
+    .perfil-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+    }
+
+    .fila-solo-lectura {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .perfil-lateral,
+    .perfil-principal {
+        width: 100%;
+    }
+}
+
+
+
+/* ============================================
+   APARKA - CONSULTA DE FLUJO VEHICULAR
+   ============================================ */
+
+form[action$="/admin/flujo"].form-inline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+                           repeat(2, minmax(0, 0.8fr))
+                           auto;
+    align-items: end;
+    gap: 16px;
+    width: 100%;
+}
+
+form[action$="/admin/flujo"].form-inline > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+form[action$="/admin/flujo"].form-inline label {
+    display: block;
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+form[action$="/admin/flujo"].form-inline input,
+form[action$="/admin/flujo"].form-inline select {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    margin: 0;
+    padding: 8px 12px;
+}
+
+form[action$="/admin/flujo"].form-inline > .btn-primario {
+    width: auto;
+    min-width: 110px;
+    height: 42px;
+    margin: 0;
+    padding: 8px 20px;
+    align-self: end;
+}
+
+/* Pantallas medianas */
+@media (max-width: 950px) {
+    form[action$="/admin/flujo"].form-inline {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    form[action$="/admin/flujo"].form-inline > .btn-primario {
+        justify-self: start;
+    }
+}
+
+/* Celulares */
+@media (max-width: 560px) {
+    form[action$="/admin/flujo"].form-inline {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    form[action$="/admin/flujo"].form-inline > .btn-primario {
+        width: 100%;
+    }
+}
+
+
+
+/* ============================================
+   APARKA - MAPA DE CALOR
+   ALINEACION DE FILTROS
+   ============================================ */
+
+form[action$="/admin/mapa-calor"].form-inline {
+    display: grid;
+    grid-template-columns: minmax(0, 220px)
+                           minmax(0, 220px)
+                           auto;
+    align-items: end;
+    justify-content: start;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Contenedores de cada fecha */
+form[action$="/admin/mapa-calor"].form-inline > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Etiquetas */
+form[action$="/admin/mapa-calor"].form-inline label {
+    display: block;
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Campos de fecha */
+form[action$="/admin/mapa-calor"].form-inline input[type="date"] {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    margin: 0;
+    padding: 8px 12px;
+}
+
+/* Boton Actualizar */
+form[action$="/admin/mapa-calor"].form-inline > .btn-primario {
+    width: auto;
+    min-width: 120px;
+    height: 42px;
+    margin: 0;
+    padding: 8px 20px;
+    align-self: end;
+}
+
+/* Mejor visualizacion de la tabla de calor */
+.mapa-calor {
+    min-width: 850px;
+}
+
+/* Adaptacion para celulares */
+@media (max-width: 600px) {
+    form[action$="/admin/mapa-calor"].form-inline {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    form[action$="/admin/mapa-calor"].form-inline > .btn-primario {
+        width: 100%;
+    }
+}
+
+
+
+/* ============================================
+   APARKA - GESTIÓN DE ZONAS
+   ALINEACIÓN DEL BOTÓN ACTUALIZAR
+   ============================================ */
+
+.gz-filtro > .btn {
+    align-self: flex-end;
+    margin-top: 0;
+    height: 36px;
+    min-height: 36px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ==========================================
+   APARKA - REGISTRAR INGRESO VEHICULAR
+   ========================================== */
+
+/* Evitar que los estilos afecten otros formularios */
+form.form-aparka[action$="/admin/entradas"] {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Fecha y hora en dos columnas */
+form.form-aparka[action$="/admin/entradas"] > .form-inline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 14px;
+}
+
+/* Etiquetas de fecha y hora encima de sus campos */
+form.form-aparka[action$="/admin/entradas"] > .form-inline > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+form.form-aparka[action$="/admin/entradas"] > .form-inline label {
+    display: block;
+    margin: 0 0 6px;
+}
+
+/* Uniformidad de los campos */
+form.form-aparka[action$="/admin/entradas"] input,
+form.form-aparka[action$="/admin/entradas"] select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    min-height: 38px;
+}
+
+/* Campos de solo lectura */
+form.form-aparka[action$="/admin/entradas"] input:disabled {
+    background-color: #f0ead9;
+    color: #71818a;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+
+/* Botón Registrar ingreso centrado */
+form.form-aparka[action$="/admin/entradas"] > button[type="submit"] {
+    align-self: center;
+    margin-top: 18px;
+    min-height: 38px;
+    padding: 10px 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Adaptación a pantallas pequeñas */
+@media (max-width: 480px) {
+    form.form-aparka[action$="/admin/entradas"] > .form-inline {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+/* ==========================================
+   APARKA - DASHBOARD ADMINISTRADOR
+   ========================================== */
+
+/* Encabezado con botón de exportación a la derecha */
+.dashboard-encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dashboard-encabezado-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.dashboard-exportar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 0;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Centrar los encabezados y valores de las columnas */
+.dashboard-ranking th:nth-child(4),
+.dashboard-ranking td:nth-child(4),
+.dashboard-ranking th:nth-child(5),
+.dashboard-ranking td:nth-child(5) {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Centrar la barra de ocupación */
+.dashboard-ranking td:nth-child(4) .barra-ocupacion {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Centrar las etiquetas de flujo */
+.dashboard-ranking td:nth-child(5) .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+}
+
+/* Adaptación a pantallas pequeñas */
+@media (max-width: 600px) {
+    .dashboard-encabezado {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dashboard-exportar {
+        align-self: flex-start;
+    }
+}
+
+
+/* ==========================================
+   APARKA - LOGIN
+   ========================================== */
+
+/* Contenedor del campo contraseña */
+.pagina-auth form[action$="/login"] .login-password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Espacio reservado para el icono del ojo */
+.pagina-auth form[action$="/login"] .login-password-wrapper input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 46px;
+}
+
+/* Botón para mostrar u ocultar contraseña */
+.pagina-auth form[action$="/login"] .login-password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #194958;
+    cursor: pointer;
+}
+
+.pagina-auth form[action$="/login"] .login-password-toggle:hover {
+    background: rgba(25, 73, 88, 0.08);
+}
+
+.pagina-auth form[action$="/login"] .login-password-toggle:focus-visible {
+    outline: 2px solid #194958;
+    outline-offset: 2px;
+}
+
+/* Centrar el botón Ingresar */
+.pagina-auth form[action$="/login"] > button[type="submit"] {
+    display: block;
+    width: fit-content;
+    margin: 20px auto 0;
+    min-height: 38px;
+    padding: 10px 28px;
+}
+
+
+/* ==========================================
+   APARKA - RECUPERAR CONTRASEÑA
+   ========================================== */
+
+/* Centrar el botón Enviar nueva contraseña */
+.pagina-auth form.form-aparka[action$="/recuperar"] > button[type="submit"] {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 20px auto 0;
+    min-height: 38px;
+    padding: 10px 24px;
+    text-align: center;
+}
+
+
+/* ==========================================
+   APARKA - REGISTRO DE USUARIOS
+   ========================================== */
+
+/* Centrar el botón Registrarme */
+.pagina-auth form.form-aparka[action$="/registro"] > button[type="submit"] {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 20px auto 0;
+    min-height: 38px;
+    padding: 10px 28px;
+    text-align: center;
+}

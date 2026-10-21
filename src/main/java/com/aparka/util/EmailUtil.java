@@ -8,8 +8,11 @@ import java.util.Properties;
 public class EmailUtil {
 
     // Configura aquí tu correo real de Gmail y tu contraseña de aplicación de 16 caracteres
-    private static final String REMITENTE = "aparkasystem@gmail.com";
-    private static final String PASSWORD = "liwpmtyudiqpmvry";
+
+private static final String REMITENTE = "aparkasystem@gmail.com";
+private static final String PASSWORD = System.getenv("APARKA_EMAIL_PASSWORD");
+
+
 
     public static void enviarCorreo(String destinatario, String asunto, String cuerpoMensaje) throws MessagingException {
         Properties props = new Properties();

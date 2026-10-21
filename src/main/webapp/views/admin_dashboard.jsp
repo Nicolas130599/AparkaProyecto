@@ -12,15 +12,26 @@
 <%@ include file="header.jspf" %>
 
 <main class="contenedor">
-    <h2 class="titulo-seccion animar-entrada">Zonas de mayor flujo vehicular</h2>
-    <p class="descripcion">Ranking en vivo según el % de ocupación registrado.</p>
 
-    <a href="${pageContext.request.contextPath}/admin/reporte-excel" class="btn btn-secundario" style="display:inline-block; margin-bottom:16px; text-decoration:none;">
+<div class="dashboard-encabezado animar-entrada">
+    <div class="dashboard-encabezado-texto">
+        <h2 class="titulo-seccion">
+            Zonas de mayor flujo vehicular
+        </h2>
+        <p class="descripcion">
+            Ranking en vivo según el % de ocupación registrado.
+        </p>
+    </div>
+
+    <a href="${pageContext.request.contextPath}/admin/reporte-excel"
+       class="btn btn-secundario dashboard-exportar">
         📊 Exportar a Excel
     </a>
+</div>
+
 
     <div class="tabla-wrapper animar-entrada">
-        <table class="tabla-aparka">
+        <table class="tabla-aparka dashboard-ranking">
             <thead>
             <tr>
                 <th>#</th>

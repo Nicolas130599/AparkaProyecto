@@ -23,7 +23,9 @@
             <label for="identificador">Usuario o Correo electrónico</label>
             <input type="text" id="identificador" name="identificador" required autofocus placeholder="Ej. Wleon o correo@gmail.com">
 
-            <button type="submit" class="btn btn-primario" style="margin-top: 15px;">Enviar nueva contraseña</button>
+
+        <button type="submit" class="btn btn-primario">Enviar nueva contraseña</button>
+
         </form>
 
         <p class="enlace-secundario">

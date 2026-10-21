@@ -1,17 +1,30 @@
 package com.aparka.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
  * Clase utilitaria para obtener la conexión a la base de datos.
+ *
+ * El puerto de MySQL cambia según la instalación (3307 o 3306), así que se prueba 3307 y, si no responde,
+ * 3306; el primero que funcione se recuerda para las siguientes conexiones. No hace falta editar nada.
+ * Opcional: se puede forzar otra conexión con las variables de entorno APARKA_DB_URL, APARKA_DB_USER y
+ * APARKA_DB_PASSWORD.
  */
 public class ConexionBD {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/Parking?useSSL=false&serverTimezone=UTC";
+    private static final Logger log = LoggerFactory.getLogger(ConexionBD.class);
+
+    private static final String[] PUERTOS = {"3307", "3306"};
+    private static final String BASE_Y_PARAMETROS = "/Parking?useSSL=false&serverTimezone=UTC";
     private static final String USUARIO = "root";
-    private static final String PASSWORD = "123456";
+    private static final String PASSWORD = "";
+
+    private static volatile String urlActiva; // la primera URL que conectó con éxito
 
     public static Connection obtenerConexion() throws SQLException {
         try {
@@ -19,6 +32,36 @@ public class ConexionBD {
         } catch (ClassNotFoundException e) {
             throw new SQLException("No se encontró el driver de MySQL", e);
         }
-        return DriverManager.getConnection(URL, USUARIO, PASSWORD);
+        String usuario = variable("APARKA_DB_USER", USUARIO);
+        String password = variable("APARKA_DB_PASSWORD", PASSWORD);
+
+        String forzada = System.getenv("APARKA_DB_URL");
+        if (forzada != null && !forzada.isBlank()) {
+            return DriverManager.getConnection(forzada.trim(), usuario, password);
+        }
+        if (urlActiva != null) {
+            return DriverManager.getConnection(urlActiva, usuario, password);
+        }
+
+        SQLException ultimo = null;
+        for (String puerto : PUERTOS) {
+            String url = "jdbc:mysql://localhost:" + puerto + BASE_Y_PARAMETROS;
+            try {
+                Connection con = DriverManager.getConnection(url, usuario, password);
+                urlActiva = url;
+                log.info("Conectado a MySQL en el puerto {}", puerto);
+                return con;
+            } catch (SQLException e) {
+                log.warn("Sin conexión a MySQL en el puerto {}: {}", puerto, e.getMessage());
+                if (ultimo != null) e.addSuppressed(ultimo);
+                ultimo = e;
+            }
+        }
+        throw ultimo;
+    }
+
+    private static String variable(String nombre, String porDefecto) {
+        String v = System.getenv(nombre);
+        return (v == null || v.isBlank()) ? porDefecto : v;
     }
 }

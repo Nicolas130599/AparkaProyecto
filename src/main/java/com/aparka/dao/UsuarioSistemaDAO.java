@@ -104,6 +104,46 @@ public class UsuarioSistemaDAO {
         }
     }
 
+
+    // ======================= PERFIL DE USUARIO =======================
+
+    /** Actualiza los datos editables del perfil (el usuario, documento y rol no se tocan). */
+    public boolean actualizarPerfil(int usuarioId, String nombres, String email, String telefono) throws SQLException {
+        String sql = "UPDATE UsuarioSistema SET Nombres = ?, Email = ?, Telefono = ? WHERE UsuarioId = ?";
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombres);
+            ps.setString(2, email);
+            ps.setString(3, telefono);
+            ps.setInt(4, usuarioId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    /** true si OTRO usuario (distinto de idExcluido) ya usa ese correo. */
+    public boolean emailEnUsoPorOtro(String email, int idExcluido) throws SQLException {
+        String sql = "SELECT UsuarioId FROM UsuarioSistema WHERE Email = ? AND UsuarioId <> ?";
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setInt(2, idExcluido);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    /** Guarda el nombre del archivo de la foto de perfil; null la quita. */
+    public boolean actualizarFoto(int usuarioId, String archivoFoto) throws SQLException {
+        String sql = "UPDATE UsuarioSistema SET FotoPerfil = ? WHERE UsuarioId = ?";
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, archivoFoto);
+            ps.setInt(2, usuarioId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
     private UsuarioSistema mapear(ResultSet rs) throws SQLException {
         UsuarioSistema u = new UsuarioSistema();
         u.setUsuarioId(rs.getInt("UsuarioId"));
@@ -116,6 +156,16 @@ public class UsuarioSistemaDAO {
         u.setNombreRol(rs.getString("NombreRol"));
         int centro = rs.getInt("CentroComercialId");
         u.setCentroComercialId(rs.wasNull() ? null : centro);
+        u.setFotoPerfil(leerFoto(rs));
         return u;
+    }
+
+    /** Lee FotoPerfil; si la columna aún no existe (aún no la creó InicializadorEsquema) no rompe el login. */
+    private static String leerFoto(ResultSet rs) {
+        try {
+            return rs.getString("FotoPerfil");
+        } catch (SQLException e) {
+            return null;
+        }
     }
 }

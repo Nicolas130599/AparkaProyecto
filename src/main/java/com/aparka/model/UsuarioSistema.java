@@ -11,6 +11,7 @@ public class UsuarioSistema {
     private int rolId;
     private String nombreRol; // se llena al hacer el JOIN con Rol
     private Integer centroComercialId;
+    private String fotoPerfil; // nombre del archivo de la foto (null si no tiene)
 
     public UsuarioSistema() {}
 
@@ -43,4 +44,16 @@ public class UsuarioSistema {
 
     public Integer getCentroComercialId() { return centroComercialId; }
     public void setCentroComercialId(Integer centroComercialId) { this.centroComercialId = centroComercialId; }
+
+    public String getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
+
+    /** Iniciales (máx. 2) para mostrar como avatar cuando el usuario no tiene foto. */
+    public String getIniciales() {
+        if (nombres == null || nombres.isBlank()) return "?";
+        String[] partes = nombres.trim().split("\\s+");
+        String ini = partes[0].substring(0, 1);
+        if (partes.length > 1) ini += partes[partes.length - 1].substring(0, 1);
+        return ini.toUpperCase();
+    }
 }

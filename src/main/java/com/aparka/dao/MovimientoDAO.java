@@ -5,7 +5,9 @@ import com.aparka.util.ConexionBD;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MovimientoDAO {
 
@@ -70,6 +72,39 @@ public class MovimientoDAO {
                     m.setPuerta(rs.getString("Puerta"));
                     m.setZona(rs.getString("ZonaNombre"));
                     resultado.add(m);
+                }
+            }
+        }
+        return resultado;
+    }
+
+    /**
+     * Ingresos agrupados por zona y por hora del día, para el mapa de calor.
+     * Incluye TODAS las zonas (aunque no tengan ingresos en el rango).
+     *
+     * @param fechaInicio formato "yyyy-MM-dd"
+     * @param fechaFin    formato "yyyy-MM-dd"
+     * @return nombre de zona -> 24 contadores (índice = hora, 0 = 00:00)
+     */
+    public Map<String, int[]> flujoPorZonaYHora(String fechaInicio, String fechaFin) throws SQLException {
+        Map<String, int[]> resultado = new LinkedHashMap<>();
+        String sql = "SELECT z.Nombre AS ZonaNombre, HOUR(e.FechaHora) AS Hora, COUNT(e.ParkingTransNo) AS Total " +
+                "FROM Zona z " +
+                "LEFT JOIN Entrada e ON e.ZonaId = z.ZonaId AND DATE(e.FechaHora) BETWEEN ? AND ? " +
+                "GROUP BY z.ZonaId, z.Nombre, HOUR(e.FechaHora) " +
+                "ORDER BY z.Nombre, Hora";
+
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int[] horas = resultado.computeIfAbsent(rs.getString("ZonaNombre"), k -> new int[24]);
+                    int hora = rs.getInt("Hora");
+                    if (!rs.wasNull() && hora >= 0 && hora < 24) { // Hora es NULL en zonas sin ingresos
+                        horas[hora] += rs.getInt("Total");
+                    }
                 }
             }
         }

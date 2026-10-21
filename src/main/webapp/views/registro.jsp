@@ -73,7 +73,7 @@
             <!-- Mensaje dinámico en rojo -->
             <div id="mensajeErrorPassword" class="error-password">Las contraseñas no coinciden</div>
 
-            <button type="submit" class="btn btn-primario" style="margin-top: 15px;">Registrarme</button>
+            <button type="submit" class="btn btn-primario">Registrarme</button>
         </form>
 
         <p class="enlace-secundario">
