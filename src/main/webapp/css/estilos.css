@@ -1092,3 +1092,28 @@ form.form-aparka[action$="/admin/entradas"] > button[type="submit"] {
         overflow-x: auto;
     }
 }
+
+/* ==========================================
+   APARKA - MEJORAS RESPONSIVE PARA TABLAS
+   ========================================== */
+
+@media (max-width: 600px) {
+
+    /* Desplazamiento horizontal fluido en celulares */
+    .tabla-wrapper,
+    .gz-tabla-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+    }
+
+    /* Indicador visual para tablas con más columnas */
+    .tabla-wrapper::before {
+        content: "Desliza horizontalmente para ver más columnas →";
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: #526a73;
+        margin-bottom: 10px;
+    }
+}
