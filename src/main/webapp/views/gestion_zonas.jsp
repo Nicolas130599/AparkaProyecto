@@ -159,7 +159,11 @@
                                     data-nivel="${z.nivel}"
                                     data-x="${z.planoX}" data-y="${z.planoY}">Editar</button>
                             <form action="${ctx}/admin/zonas" method="post" class="form-linea"
-                                  onsubmit="return confirm('¿Eliminar esta zona? Esta acción no se puede deshacer.');">
+                                onsubmit="return confirm('¿Eliminar esta zona? Esta acción no se puede deshacer.');">
+
+                                <input type="hidden" name="csrfToken"
+                                    value="<c:out value='${sessionScope.csrfToken}'/>">
+
                                 <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="id" value="${z.zonaId}">
                                 <button type="submit" class="btn btn-peligro btn-chico">Eliminar</button>
@@ -221,9 +225,14 @@
                                     data-ubicacion="<c:out value='${cj.ubicacion}'/>" data-nivel="${cj.nivel}"
                                     data-x="${cj.planoX}" data-y="${cj.planoY}">Editar</button>
                             <form action="${ctx}/admin/cajas" method="post" class="form-linea"
-                                  onsubmit="return confirm('¿Eliminar este cajero? Solo es posible si no tiene ventas registradas.');">
+                                onsubmit="return confirm('¿Eliminar este cajero? Solo es posible si no tiene ventas registradas.');">
+
+                                <input type="hidden" name="csrfToken"
+                                    value="<c:out value='${sessionScope.csrfToken}'/>">
+
                                 <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="id" value="<c:out value='${cj.cajaId}'/>">
+
                                 <button type="submit" class="btn btn-peligro btn-chico">Eliminar</button>
                             </form>
                         </td>
@@ -240,13 +249,14 @@
 
 <!-- ============ Diálogo crear / editar zona ============ -->
 <dialog id="dlgZona" class="gz-dialogo">
-    <form action="${ctx}/admin/zonas" method="post" class="form-aparka" id="formZona">
-        <h3 id="dlgTitulo">Nueva zona</h3>
-        <input type="hidden" name="accion" id="fAccion" value="crear">
+        <form action="${ctx}/admin/zonas" method="post" class="form-aparka" id="formZona">
+            <h3 id="dlgTitulo">Nueva zona</h3>
+            <input type="hidden" name="csrfToken"
+                value="<c:out value='${sessionScope.csrfToken}'/>">
+            <input type="hidden" name="accion" id="fAccion" value="crear">
         <input type="hidden" name="id" id="fId">
         <input type="hidden" name="planoX" id="fX">
         <input type="hidden" name="planoY" id="fY">
-
         <div class="gz-form-grid">
             <div><label for="fNombre">Nombre de la zona</label><input type="text" id="fNombre" name="nombre" maxlength="100" required></div>
             <div><label for="fUbicacion">Ubicación (referencia)</label><input type="text" id="fUbicacion" name="ubicacion" maxlength="150"></div>
@@ -258,7 +268,6 @@
                     <c:forEach var="nv" items="${niveles}"><option value="${nv}">${nv}</option></c:forEach>
                 </select></div>
         </div>
-
         <div id="pickerBloque" hidden>
             <p class="gz-ayuda">Haz clic sobre el plano para ubicar la zona.</p>
             <div class="gz-picker" id="picker">
@@ -266,7 +275,6 @@
                 <span class="gz-marcador" id="pickerMarcador" hidden></span>
             </div>
         </div>
-
         <div class="gz-dialogo-acciones">
             <button type="button" class="btn btn-neutro btn-chico" id="btnCancelarZona">Cancelar</button>
             <button type="submit" class="btn btn-primario btn-chico">Guardar</button>
@@ -278,6 +286,8 @@
 <dialog id="dlgCaja" class="gz-dialogo">
     <form action="${ctx}/admin/cajas" method="post" class="form-aparka">
         <h3 id="cajaTitulo">Nuevo cajero</h3>
+        <input type="hidden" name="csrfToken"
+            value="<c:out value='${sessionScope.csrfToken}'/>">
         <input type="hidden" name="accion" id="cAccion" value="crear">
         <input type="hidden" name="planoX" id="cX">
         <input type="hidden" name="planoY" id="cY">
@@ -303,7 +313,6 @@
         </div>
     </form>
 </dialog>
-
 <script src="${ctx}/js/animaciones.js"></script>
 <script src="${ctx}/js/gestion_zonas.js"></script>
 </body>
