@@ -35,6 +35,10 @@ public class LoginServlet extends HttpServlet {
             UsuarioSistema usuario = usuarioDAO.autenticar(username, contrasena);
             if (usuario != null) {
                 HttpSession session = req.getSession();
+
+                // Renueva el identificador después de autenticar al usuario.
+                req.changeSessionId();
+
                 session.setAttribute("usuario", usuario);
                 session.setAttribute("rol", usuario.getNombreRol());
 
