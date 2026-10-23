@@ -101,7 +101,60 @@ src/
 └── test/java/           # Pruebas JUnit
 ```
 
-Se utilizan separación **MVC** (Servlets, modelos y JSP) y clases **DAO** para encapsular el acceso a datos. La existencia de esta organización no demuestra por sí sola cumplimiento integral de SOLID ni un proceso TDD estricto.
+### Patrón MVC (Modelo–Vista–Controlador)
+
+APARKA organiza la aplicación web por responsabilidades:
+
+- **Modelo:** `com.aparka.model` incluye `Zona`, `Entrada` y `UsuarioSistema`, que representan información y, cuando corresponde, reglas de negocio.
+- **Vista:** las páginas JSP y los recursos HTML/CSS/JavaScript presentan la información y los formularios.
+- **Controlador:** los Servlets de `com.aparka.controller`, como `LoginServlet`, `RegistrarEntradaServlet` y `GestionZonaServlet`, reciben solicitudes HTTP y coordinan respuestas.
+
+Esta separación facilita mantener la presentación independiente de los datos y del procesamiento de solicitudes.
+
+### Patrón DAO (Data Access Object)
+
+El paquete `com.aparka.dao` centraliza el acceso a MySQL. Por ejemplo, `ZonaDAO` implementa `listarTodas()`, `obtenerPorId()`, `insertar()`, `actualizar()` y `eliminar()` usando JDBC.
+
+- Las consultas con parámetros utilizan `PreparedStatement`, por ejemplo `WHERE ZonaId = ?` con `ps.setInt(1, zonaId)`.
+- `try-with-resources` cierra conexiones, sentencias y resultados.
+- `mapear(ResultSet)` transforma las filas recuperadas en objetos `Zona`.
+- `listarTodas()` calcula la ocupación real contando entradas sin salida (`TieneSalida = 0`), en lugar de depender de un contador manual almacenado en la tabla de zonas.
+
+**Evidencia:** [`ZonaDAO.java`](src/main/java/com/aparka/dao/ZonaDAO.java).
+
+### Principios SOLID: aplicación verificable
+
+**Responsabilidad única (SRP)** es el principio SOLID que se puede ilustrar directamente con las clases revisadas:
+
+| Clase | Responsabilidad principal |
+|---|---|
+| [`Zona.java`](src/main/java/com/aparka/model/Zona.java) | Representar una zona y calcular su porcentaje de ocupación y nivel de flujo. |
+| [`ZonaService.java`](src/main/java/com/aparka/service/ZonaService.java) | Ofrecer operaciones de gestión de zonas y delegar la persistencia. |
+| [`ZonaDAO.java`](src/main/java/com/aparka/dao/ZonaDAO.java) | Ejecutar consultas SQL y mapear los resultados a objetos del modelo. |
+
+Por ejemplo, `ZonaService.crearZona(z)` delega en `zonaDAO.insertar(z)`: el servicio no contiene la instrucción SQL del `INSERT`. La distribución entre modelo, servicio y persistencia es **coherente con SRP** y mejora la organización y mantenibilidad.
+
+**Alcance de la evidencia:** no se declara una implementación integral de los cinco principios SOLID. En particular, `ZonaService` instancia directamente `new ZonaDAO()`, por lo que este ejemplo no acredita inversión de dependencias (DIP). Otros principios deben demostrarse con clases específicas si el equipo los presenta en la sustentación.
+
+### Pruebas unitarias y metodología TDD
+
+El equipo identifica **TDD (Test-Driven Development)** como parte de su enfoque de desarrollo. En el repositorio se encuentran pruebas automatizadas con **JUnit 5**, que permiten comprobar comportamientos esperados y casos límite. La presencia de pruebas finales no acredita por sí sola el orden histórico **Red → Green → Refactor**.
+
+**Ejemplo comprobado:** [`ZonaTest.java`](src/test/java/com/aparka/model/ZonaTest.java) valida los métodos `getPorcentajeOcupacion()` y `getNivelFlujo()` de [`Zona.java`](src/main/java/com/aparka/model/Zona.java):
+
+| Escenario probado | Resultado esperado |
+|---|---|
+| 25 espacios ocupados de 50 | 50 % de ocupación |
+| Capacidad total de 0 | 0 %, sin división por cero |
+| 39 % de ocupación | `BAJO` |
+| 40 % de ocupación | `MEDIO` |
+| 79 % de ocupación | `MEDIO` |
+| 80 % de ocupación | `ALTO` |
+| 100 % de ocupación | `ALTO` |
+
+Las pruebas usan `@Test`, `@ParameterizedTest`, `@CsvSource` y `assertEquals`; la clase `ZonaTest` aporta **10 ejecuciones** a la batería registrada. La clase de pruebas fue incorporada al historial en el commit [`12aaa16`](https://github.com/Nicolas130599/AparkaProyecto/commit/12aaa16), del **25/09/2026**. Ese commit demuestra su incorporación, pero no por sí mismo que la prueba antecediera a la implementación.
+
+**Resultado global registrado:** 80 pruebas aprobadas, 0 fallos, 0 errores y 0 omitidas, al ejecutar `mvn clean verify` el 23/10/2026. Para sustentar el ciclo TDD estricto, el equipo deberá mostrar evidencia adicional de la secuencia prueba fallida → implementación mínima → refactorización, si la conserva.
 
 ## 🔐 Seguridad
 
