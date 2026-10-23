@@ -1,99 +1,190 @@
-# APARKA — Sistema web de gestión de estacionamientos
+# 🅿️ APARKA — Sistema web de gestión de estacionamientos
 
-Proyecto académico desarrollado en **Java (Servlets y JSP)** para gestionar operaciones de estacionamiento y consultar la ocupación y el flujo vehicular por zonas.
+**APARKA** es un proyecto académico desarrollado con **Java, Jakarta Servlets y JSP** para gestionar ingresos y salidas vehiculares, consultar disponibilidad y analizar el flujo de vehículos por zonas de estacionamiento.
 
-## Funcionalidades implementadas en el código
+![Java](https://img.shields.io/badge/Java-17%2B-orange) ![Jakarta](https://img.shields.io/badge/Jakarta-Servlets%20%26%20JSP-blue) ![MySQL](https://img.shields.io/badge/Base%20de%20datos-MySQL-4479A1) ![Maven](https://img.shields.io/badge/Build-Maven-C71A36) ![JUnit](https://img.shields.io/badge/JUnit-80%20pruebas%20aprobadas-25A162) ![Tomcat](https://img.shields.io/badge/Servidor-Tomcat%2011-F8DC75)
 
-- **Autenticación:** inicio y cierre de sesión, registro y recuperación de contraseña.
-- **Usuarios:** consulta de zonas, reserva, registro de entrada vehicular y edición de perfil/foto.
-- **Administración:** dashboard, consulta de flujo vehicular, mapa de calor, gestión de zonas, registro de entradas y salidas, gestión de cajas y exportación de reportes Excel.
+> **Estado verificado el 23/10/2026:** el Pull Request [#3](https://github.com/Nicolas130599/AparkaProyecto/pull/3) se fusionó a `main`; `mvn clean verify` finalizó con **BUILD SUCCESS**, **80 pruebas**, **0 fallos**, **0 errores** y **0 omitidas**. Las verificaciones manuales realizadas abarcaron inicio de sesión, navegación básica por roles, cierre de sesión y bloqueo del dashboard administrativo sin autorización. Esto no constituye una auditoría de seguridad ni una prueba integral de todos los módulos.
 
-> El funcionamiento de cada módulo depende de contar con la base de datos y los servicios configurados. Esta lista describe módulos presentes en el repositorio, no una certificación de pruebas de extremo a extremo.
+## ✨ Funcionalidades
 
-## Capturas disponibles
-
-| Inicio de sesión | Zonas | Dashboard |
-|---|---|---|
-| ![Login](docs/screenshots/login.png) | ![Zonas](docs/screenshots/zonas.png) | ![Dashboard](docs/screenshots/dashboard.png) |
-
-## Tecnologías
-
-- Java 17 como versión objetivo de compilación (`pom.xml`); JDK 17 o superior compatible.
-- Jakarta Servlet 6.0, JSP/JSTL, HTML, CSS y JavaScript.
-- MySQL con JDBC y `PreparedStatement`.
-- Apache Maven, empaquetado WAR y Apache Tomcat 11.
-- JUnit 5 y Maven Surefire para pruebas automatizadas.
-
-### Librerías solicitadas en APF3
-
-| Librería | Uso verificable en el código |
+| Rol | Funcionalidades disponibles en el código |
 |---|---|
-| Google Guava | `Preconditions` en `com.aparka.util.ValidacionUtil` |
+| **Usuario** | Inicio y cierre de sesión, registro y recuperación de contraseña, consulta de zonas y tarifas, reserva, registro de ingreso vehicular y administración de perfil/fotografía. |
+| **Administrador** | Panel de indicadores, registro de entradas y salidas, historial de flujo vehicular, mapa de calor, gestión de zonas y cajeros, administración de perfil y exportación de reportes Excel. |
+
+## 📸 Galería de capturas
+
+Las imágenes corresponden a una ejecución local de APARKA con datos de demostración. Las pantallas ilustran las interfaces; no acreditan por sí solas todas las operaciones de extremo a extremo.
+
+### Acceso al sistema
+
+**Inicio de sesión** — formulario de autenticación para los roles de usuario y administrador.
+
+![Inicio de sesión de APARKA](docs/screenshots/login.png)
+
+### Panel de administrador
+
+**Dashboard** — capacidad, ocupación, disponibilidad y ranking de zonas.
+
+![Dashboard administrativo](docs/screenshots/dashboard.png)
+
+| Registro de entradas | Registro de salidas |
+|---|---|
+| ![Registro de entradas](docs/screenshots/entradas_admin.png) | ![Registro de salidas](docs/screenshots/salidas_admin.png) |
+
+**Flujo vehicular** — historial de ingresos y salidas con filtros por fecha, zona y tipo.
+
+![Historial de flujo vehicular](docs/screenshots/flujo_vehicular.png)
+
+**Zonas y flujo** — indicadores, mapa de calor, gestión de zonas y cajeros.
+
+![Mapa de calor y gestión de zonas](docs/screenshots/mapa_calor.png)
+
+| Gestión de zonas y resumen por nivel | Cajeros y módulos de pago |
+|---|---|
+| ![Gestión de zonas](docs/screenshots/gestion_zonas.png) | ![Cajeros y módulos de pago](docs/screenshots/cajeros.png) |
+
+**Perfil de administrador** — información personal, fotografía y opciones de cambio de contraseña.
+
+![Perfil de administrador](docs/screenshots/perfil_admin.png)
+
+### Panel de usuario
+
+**Zonas disponibles** — consulta de ocupación, capacidad, tarifas y acceso al registro vehicular.
+
+![Zonas disponibles para el usuario](docs/screenshots/zonas_usuario.png)
+
+**Registrar ingreso vehicular** — formulario de placa con una zona previamente seleccionada.
+
+![Registro de ingreso vehicular de usuario](docs/screenshots/ingreso_usuario.png)
+
+**Perfil de usuario** — información personal, fotografía y opciones de seguridad de la cuenta.
+
+![Perfil de usuario](docs/screenshots/perfil_usuario.png)
+
+## 🧰 Tecnologías
+
+- **Java 17** como objetivo de compilación del proyecto; JDK compatible.
+- **Jakarta Servlets, JSP/JSTL**, HTML, CSS y JavaScript.
+- **MySQL** mediante JDBC y consultas parametrizadas con `PreparedStatement`.
+- **Apache Maven**, empaquetado **WAR** y **Apache Tomcat 11**.
+- **JUnit 5** y Maven Surefire para pruebas automatizadas.
+
+### Librerías utilizadas
+
+| Librería | Aplicación en APARKA |
+|---|---|
+| Google Guava | `Preconditions` en `ValidacionUtil` |
 | Apache Commons Lang / Validator | `StringUtils` y `EmailValidator` en `ValidacionUtil` |
-| Apache POI | `XSSFWorkbook` en `com.aparka.controller.ReporteExcelServlet` |
-| Logback / SLF4J | Configuración `logback.xml` y registros de eventos desde controladores y utilidades |
+| Apache POI | `XSSFWorkbook` en `ReporteExcelServlet` |
+| Logback / SLF4J | Configuración de registros y eventos de aplicación |
+| jBCrypt | Hash y verificación de contraseñas en `PasswordUtils` |
 
-Las dependencias están declaradas en `pom.xml`.
+Las dependencias se administran desde `pom.xml`.
 
-## Arquitectura y patrones
+## 🏗️ Arquitectura
 
 ```text
-src/main/java/com/aparka/
-├── controller/  → Servlets: recepción de solicitudes HTTP
-├── service/     → Servicios de aplicación (p. ej. ZonaService)
-├── dao/         → Acceso a datos (p. ej. ZonaDAO, UsuarioSistemaDAO)
-├── model/       → Entidades y modelos de dominio
-└── util/        → Validación, conexión, seguridad y utilidades
-src/main/webapp/
-├── views/       → Vistas JSP
-├── css/         → Estilos
-└── js/          → Comportamiento de interfaz
+src/
+├── main/
+│   ├── java/com/aparka/
+│   │   ├── controller/  # Servlets y solicitudes HTTP
+│   │   ├── service/     # Servicios de aplicación
+│   │   ├── dao/         # Acceso a datos
+│   │   ├── model/       # Entidades y modelos
+│   │   └── util/        # Validación, conexión y seguridad
+│   └── webapp/
+│       ├── views/       # Vistas JSP
+│       ├── css/         # Estilos
+│       └── js/          # Comportamiento del cliente
+└── test/java/           # Pruebas JUnit
 ```
 
-- **MVC:** controladores Servlet, modelos Java y vistas JSP.
-- **DAO:** consultas SQL encapsuladas en clases de acceso a datos.
-- **SOLID:** existe separación de responsabilidades; la conformidad con cada principio debe argumentarse por clase y no se considera automáticamente demostrada por usar paquetes.
-- **TDD:** existen pruebas automatizadas JUnit 5, pero el proceso *prueba antes que implementación* solo puede acreditarse mediante evidencias del historial de desarrollo.
+Se utilizan separación **MVC** (Servlets, modelos y JSP) y clases **DAO** para encapsular el acceso a datos. La existencia de esta organización no demuestra por sí sola cumplimiento integral de SOLID ni un proceso TDD estricto.
 
-## Instalación local
+## 🔐 Seguridad
+
+Controles implementados en el código:
+
+- **BCrypt:** almacenamiento de contraseñas como hashes y verificación mediante `PasswordUtils`.
+- **CSRF:** validación de tokens en las rutas POST protegidas por `CsrfFilter`.
+- **Validación de entradas:** reglas de formato y contenido en `ValidacionUtil`.
+- **Autorización por rol:** `RoleFilter` restringe las rutas `/admin/*`.
+- **Sesiones:** renovación del identificador de sesión tras autenticación exitosa.
+- **Intentos de acceso:** limitación de intentos fallidos de inicio de sesión.
+- **Base de datos:** consultas parametrizadas y operaciones transaccionales para controlar la capacidad de las zonas.
+- **Secretos:** la conexión MySQL requiere variables de entorno, sin credenciales fijas en `ConexionBD`.
+
+**Alcance:** los controles anteriores no equivalen a una auditoría de seguridad completa. Deben seguir revisándose los permisos de cada endpoint, la configuración de cookies/sesiones, el despliegue y la gestión de secretos.
+
+> **Advertencia sobre el historial:** versiones anteriores del repositorio público contenían credenciales. Retirarlas del código actual no las elimina de los commits históricos. Es necesario **revocar o rotar** cualquier secreto expuesto, incluidas credenciales MySQL y SMTP. No reescribir el historial compartido sin coordinarlo con el equipo.
+
+## 🧪 Pruebas automatizadas
+
+Ejecutar desde la raíz del proyecto:
+
+```bash
+mvn clean verify
+```
+
+**Última ejecución verificada: 23 de octubre de 2026.**
+
+| Clase de prueba | Pruebas | Fallos | Errores |
+|---|---:|---:|---:|
+| `EntradaDAOTest` | 3 | 0 | 0 |
+| `MapaCalorTest` | 6 | 0 | 0 |
+| `ResumenNivelTest` | 3 | 0 | 0 |
+| `ZonaTest` | 10 | 0 | 0 |
+| `FotoPerfilUtilTest` | 7 | 0 | 0 |
+| `LoginAttemptLimiterTest` | 6 | 0 | 0 |
+| `ValidacionUtilTest` | 45 | 0 | 0 |
+| **Total** | **80** | **0** | **0** |
+
+Resultado: **BUILD SUCCESS**, con **0 pruebas omitidas**. La compilación generó `target/AparkaProyecto.war`. Algunas pruebas requieren una base MySQL de pruebas aislada (`parking_test`); **no ejecutar pruebas que escriben datos contra la base de producción**.
+
+## 🚀 Instalación local
 
 ### Requisitos
 
-JDK 17+, Maven, Tomcat 11 y MySQL. Para ejecutar módulos que envían correo, se requiere una cuenta SMTP configurada.
+- JDK compatible con el objetivo Java 17 del proyecto.
+- Apache Maven.
+- Apache Tomcat 11.
+- MySQL y una base de datos preparada para APARKA.
+- Configuración SMTP, solo para las funcionalidades que envían correos.
 
-### 1. Obtener el proyecto
+### 1. Clonar
 
 ```bash
 git clone https://github.com/Nicolas130599/AparkaProyecto.git
 cd AparkaProyecto
 ```
 
-### 2. Preparar MySQL
+### 2. Preparar la base de datos
 
-El repositorio incluye el archivo **`schema (1).sql`**, que crea la base `Parking` y sus tablas iniciales. Revisa el script y cualquier dato de demostración antes de ejecutarlo; úsalo solo en una base de prueba o con respaldo. La clase `InicializadorEsquema` verifica/agrega determinadas columnas al arrancar la aplicación, por lo que el script por sí solo no documenta todas las ampliaciones de esquema.
+El repositorio incluye `schema (1).sql`, que define una estructura inicial para `Parking`. **Revisar el script y respaldar los datos antes de ejecutarlo**. La aplicación incluye lógica adicional de actualización/verificación de esquema (`InicializadorEsquema`); por tanto, el script inicial no describe necesariamente todas las ampliaciones posteriores.
 
-### 3. Configurar credenciales sin escribirlas en el código
+### 3. Configurar variables de entorno
 
-La clase `ConexionBD` admite estas variables de entorno:
+`ConexionBD` **exige** las tres variables siguientes (sin valores por defecto):
 
-| Variable | Uso |
+| Variable | Descripción |
 |---|---|
-| `APARKA_DB_PASSWORD` | Contraseña del usuario MySQL |
-| `APARKA_DB_USER` | Usuario MySQL; por defecto `root` |
-| `APARKA_DB_URL` | URL JDBC opcional; por defecto intenta `localhost:3307` y `localhost:3306`, base `Parking` |
-| `APARKA_EMAIL_PASSWORD` | Contraseña de aplicación para el correo SMTP, cuando corresponda |
+| `APARKA_DB_URL` | URL JDBC de la base de datos correspondiente al entorno |
+| `APARKA_DB_USER` | Usuario de MySQL |
+| `APARKA_DB_PASSWORD` | Contraseña del usuario de MySQL |
 
-En **PowerShell**, para la sesión actual (sin guardar contraseñas en archivos):
+Para un ejemplo local con PowerShell (sustituir los valores según el entorno):
 
 ```powershell
-$env:APARKA_DB_USER = "root"
-$env:APARKA_DB_PASSWORD = Read-Host "Contraseña de MySQL"
-# Opcional: $env:APARKA_DB_URL = "jdbc:mysql://localhost:3307/Parking?useSSL=false&serverTimezone=UTC"
+$env:APARKA_DB_URL = 'jdbc:mysql://localhost:3307/Parking?serverTimezone=UTC'
+$env:APARKA_DB_USER = Read-Host 'Usuario MySQL'
+$env:APARKA_DB_PASSWORD = Read-Host 'Contraseña MySQL'
 ```
 
-Si necesitas enviar correos, configura `APARKA_EMAIL_PASSWORD` de manera segura antes de iniciar Tomcat. **Inicia Tomcat desde una consola que tenga acceso a estas variables**; los procesos ya abiertos no reciben automáticamente los cambios del entorno.
+Estas asignaciones duran únicamente en la sesión actual. **Tomcat debe iniciarse desde un proceso que reciba las variables**; si se inicia mediante `startup.bat` desde otra sesión de Windows, verificar que ese proceso tenga acceso a ellas. No publicar valores reales en GitHub.
 
-> El proyecto usa `aparkasystem@gmail.com` como remitente SMTP en `EmailUtil.java`. El envío debe probarse por separado; no se garantiza únicamente por compilar.
+Para correo SMTP, configurar `APARKA_EMAIL_PASSWORD` de forma segura cuando corresponda. El envío de correo debe verificarse por separado.
 
 ### 4. Compilar y desplegar
 
@@ -101,44 +192,25 @@ Si necesitas enviar correos, configura `APARKA_EMAIL_PASSWORD` de manera segura 
 mvn clean package
 ```
 
-Copia `target/AparkaProyecto.war` a `webapps/` de Tomcat 11, inicia Tomcat y visita:
+Copiar `target/AparkaProyecto.war` a la carpeta `webapps/` de Tomcat 11 y arrancar el servidor mediante `bin/startup.bat` en Windows. Acceder a:
 
-`http://localhost:8080/AparkaProyecto/`
-
-**No publiques credenciales ni cuentas de prueba reales en este documento.** Crea cuentas de prueba mediante el procedimiento de registro o mediante datos de prueba preparados para tu entorno.
-
-## Pruebas
-
-```bash
-mvn test
+```text
+http://localhost:8080/AparkaProyecto/
 ```
 
-El código contiene cinco clases de pruebas JUnit 5:
+En la verificación manual del 23/10/2026, el acceso sin sesión redirigió a `/AparkaProyecto/login`. La instalación de un nuevo WAR **no ocurre automáticamente** al compilar con Maven.
 
-- `FotoPerfilUtilTest`
-- `ValidacionUtilTest`
-- `ResumenNivelTest`
-- `MapaCalorTest`
-- `ZonaTest`
+## 🌿 Control de versiones
 
-En la última compilación comprobada durante el trabajo del equipo se reportaron **55 pruebas ejecutadas, 0 fallos y 0 errores**. Vuelve a ejecutar `mvn test` en tu entorno para obtener una evidencia actualizada.
+- Repositorio: [Nicolas130599/AparkaProyecto](https://github.com/Nicolas130599/AparkaProyecto)
+- Rama principal: `main`.
+- Pull Request [#3 — Seguridad CSRF, validaciones y pruebas](https://github.com/Nicolas130599/AparkaProyecto/pull/3): **fusionado y cerrado el 23/10/2026**.
+- Los cambios se verificaron en `main` con 80 pruebas JUnit satisfactorias.
 
-## Seguridad: controles y aspectos por revisar
+## 📚 Documentación académica
 
-**Controles identificados:** contraseñas de usuarios con BCrypt (`PasswordUtils` y `UsuarioSistemaDAO`), consultas preparadas con JDBC, validaciones del lado del servidor y filtro de acceso a rutas `/admin/*` mediante `RoleFilter`.
-
-**Revisiones pendientes:** protección CSRF en operaciones que modifican datos, endurecimiento de sesiones/cookies, controles de autorización en todos los endpoints y gestión segura de secretos. No se declara una auditoría de seguridad completa.
-
-**Aviso importante:** el repositorio público tuvo credenciales reales en versiones anteriores. Retirarlas del código actual **no las elimina del historial**. Se deben revocar o rotar las contraseñas expuestas (MySQL y contraseña de aplicación de Gmail) y actualizar las variables de entorno. Si se decide limpiar el historial de Git, coordinarlo con el equipo y no reescribirlo sin un plan.
-
-## Control de versiones
-
-El proyecto se mantiene en GitHub mediante Git. La rama principal es `main`. Para mostrar avances al docente, conservar el historial de commits y documentar qué funcionalidades se entregaron en cada versión.
-
-## Documentación del APF3
-
-Los diagramas UML, la sustentación y los anexos académicos pueden entregarse por separado. Deben reflejar las clases y funcionalidades realmente presentes en este repositorio.
+Los diagramas UML, las evidencias y los anexos del APF3 pueden entregarse por separado. Deben reflejar las funcionalidades y el código realmente presentes en el repositorio.
 
 ---
 
-Proyecto académico APARKA.
+**APARKA · Proyecto académico de Ingeniería de Sistemas.**
