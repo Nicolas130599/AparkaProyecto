@@ -17,7 +17,15 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-@WebFilter(urlPatterns = {"/admin/zonas", "/admin/cajas"})
+@WebFilter(urlPatterns = {
+        "/admin/zonas",
+        "/admin/cajas",
+        "/admin/entradas",
+        "/admin/salidas",
+        "/perfil",
+        "/perfil/foto",
+        "/reserva"
+})
 public class CsrfFilter implements Filter {
 
     public static final String TOKEN_SESION = "csrfToken";
@@ -32,7 +40,6 @@ public class CsrfFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-
         HttpSession session = request.getSession(false);
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
@@ -53,7 +60,7 @@ public class CsrfFilter implements Filter {
 
         } else if ("GET".equalsIgnoreCase(request.getMethod())
                 && session != null
-                && "ADMIN".equals(session.getAttribute("rol"))) {
+                && session.getAttribute("usuario") != null) {
 
             synchronized (session) {
                 if (session.getAttribute(TOKEN_SESION) == null) {

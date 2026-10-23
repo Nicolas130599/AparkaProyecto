@@ -143,6 +143,28 @@ public class RegistrarEntradaServlet extends HttpServlet {
                 return;
             }
 
+            // Zona llena: mostrar un mensaje amigable sin generar HTTP 500.
+            if (e.getMessage() != null
+                    && e.getMessage().contains("La zona est")) {
+
+                log.warn(
+                        "Ingreso rechazado por capacidad: placa='{}', zonaId={}",
+                        entrada.getPlaca(),
+                        entrada.getZonaId()
+                );
+
+                resp.setStatus(HttpServletResponse.SC_CONFLICT);
+
+                req.setAttribute(
+                        "error",
+                        "La zona seleccionada está llena. "
+                        + "Por favor, elige otra zona disponible."
+                );
+
+                doGet(req, resp);
+                return;
+            }
+
             // Otros errores de base de datos
             log.error(
                     "Error al registrar ingreso desde admin, placa='{}'",

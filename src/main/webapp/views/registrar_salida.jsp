@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -23,21 +24,36 @@
             <div class="alerta alerta-error">${error}</div>
         </c:if>
 
+        <%-- Formulario 1: Buscar vehículo --%>
         <form action="${pageContext.request.contextPath}/admin/salidas" method="post" class="form-aparka">
+
+            <%-- Protección CSRF --%>
+            <input type="hidden" name="csrfToken"
+                   value="<c:out value='${sessionScope.csrfToken}'/>">
+
             <input type="hidden" name="accion" value="buscar">
+
             <label for="criterio">N° Ticket o Placa</label>
             <input type="text" id="criterio" name="criterio" placeholder="Ej. ABC-123 o 1024" required autofocus>
+
             <button type="submit" class="btn btn-primario">Buscar</button>
         </form>
 
         <c:if test="${not empty entradaEncontrada}">
             <hr style="margin:18px 0; border:none; border-top:1px solid #eee0c3;">
             <h3 style="margin-bottom:8px;">Vehículo encontrado</h3>
+
             <p><strong>Ticket:</strong> ${entradaEncontrada.parkingTransNo}</p>
             <p><strong>Placa:</strong> ${entradaEncontrada.placa}</p>
             <p><strong>Ingreso:</strong> <fmt:formatDate value="${entradaEncontrada.fechaHora}" pattern="dd/MM/yyyy HH:mm"/></p>
 
+            <%-- Formulario 2: Confirmar salida --%>
             <form action="${pageContext.request.contextPath}/admin/salidas" method="post" class="form-aparka" style="margin-top:14px;">
+
+                <%-- Protección CSRF --%>
+                <input type="hidden" name="csrfToken"
+                       value="<c:out value='${sessionScope.csrfToken}'/>">
+
                 <input type="hidden" name="accion" value="confirmar">
                 <input type="hidden" name="ticket" value="${entradaEncontrada.parkingTransNo}">
 
