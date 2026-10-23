@@ -1,51 +1,117 @@
+
 package com.aparka.util;
 
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.util.Locale;
+
 /**
- * Validaciones reutilizables de formularios, hechas en el backend (no solo en el HTML),
- * usando librerías de apoyo en vez de reinventar estas comprobaciones a mano:
- * - Apache Commons Lang3 (StringUtils) para verificar textos vacíos/en blanco.
- * - Apache Commons Validator para validar el FORMATO de un correo electrónico.
- * - Google Guava (Preconditions) para validaciones defensivas tipo "fail fast".
+ * Validaciones reutilizables de formularios realizadas en el backend.
+ *
+ * Bibliotecas utilizadas:
+ * - Apache Commons Lang3: validaciones de cadenas.
+ * - Apache Commons Validator: validación de correos electrónicos.
+ * - Google Guava: validaciones defensivas.
  */
 public class ValidacionUtil {
 
-    /** Lanza IllegalArgumentException si el texto es null, vacío o solo espacios. */
-    public static void requerirTextoNoVacio(String valor, String nombreCampo) {
+    /**
+     * Verifica que un texto no sea nulo, vacío o solo espacios.
+     */
+    public static void requerirTextoNoVacio(
+            String valor, String nombreCampo) {
+
         Preconditions.checkArgument(
                 StringUtils.isNotBlank(valor),
-                "El campo '%s' no puede estar vacío.", nombreCampo
+                "El campo '%s' no puede estar vacío.",
+                nombreCampo
         );
     }
 
-    /** Verifica que el correo tenga un formato válido (usuario@dominio.com). */
+    /**
+     * Comprueba el formato de un correo electrónico.
+     */
     public static boolean esCorreoValido(String email) {
-        if (StringUtils.isBlank(email)) return false;
+
+        if (StringUtils.isBlank(email)) {
+            return false;
+        }
+
         return EmailValidator.getInstance().isValid(email);
     }
 
-    /** Verifica que la placa no esté vacía y tenga una longitud razonable (entre 5 y 8 caracteres). */
+    /**
+     * Valida placas alfanuméricas flexibles.
+     *
+     * Reglas:
+     * - Entre 5 y 7 caracteres.
+     * - Letras y números.
+     * - Un guion opcional entre grupos.
+     * - No permite espacios internos ni símbolos especiales.
+     * - Compatible con Entrada.Placa CHAR(7).
+     *
+     * Ejemplos válidos:
+     * ABC-123, ABC123, 1234AB, A1B234.
+     */
     public static boolean esPlacaValida(String placa) {
-        if (StringUtils.isBlank(placa)) return false;
-        String limpia = StringUtils.trim(placa);
-        return limpia.length() >= 5 && limpia.length() <= 8;
+
+        if (StringUtils.isBlank(placa)) {
+            return false;
+        }
+
+        String limpia = placa.trim().toUpperCase(Locale.ROOT);
+
+        return limpia.matches(
+                "(?=.{5,7}$)[A-Z0-9]+(?:-[A-Z0-9]+)?"
+        );
     }
 
-    /** Verifica que una contraseña tenga al menos el largo mínimo exigido. */
-    public static boolean esPasswordValida(String password, int largoMinimo) {
-        Preconditions.checkArgument(largoMinimo > 0, "El largo mínimo debe ser mayor a 0.");
-        return StringUtils.isNotBlank(password) && password.length() >= largoMinimo;
+    /**
+     * Comprueba que una contraseña tenga la longitud mínima.
+     */
+    public static boolean esPasswordValida(
+            String password, int largoMinimo) {
+
+        Preconditions.checkArgument(
+                largoMinimo > 0,
+                "El largo mínimo debe ser mayor a 0."
+        );
+
+        return StringUtils.isNotBlank(password)
+                && password.length() >= largoMinimo;
     }
 
-    /** Teléfono: solo dígitos, espacios, +, -, paréntesis; entre 7 y 15 dígitos (ej. "+51 987 654 321"). */
+    /**
+     * Valida números telefónicos.
+     *
+     * Permite:
+     * - Dígitos.
+     * - Espacios.
+     * - Signo +.
+     * - Guiones.
+     * - Paréntesis.
+     *
+     * Requiere entre 7 y 15 dígitos.
+     */
     public static boolean esTelefonoValido(String telefono) {
-        if (StringUtils.isBlank(telefono)) return false;
+
+        if (StringUtils.isBlank(telefono)) {
+            return false;
+        }
+
         String t = telefono.trim();
-        if (t.length() > 20 || !t.matches("[+0-9 ()\\-]+")) return false;
-        long digitos = t.chars().filter(Character::isDigit).count();
+
+        if (t.length() > 20
+                || !t.matches("[+0-9 ()\\-]+")) {
+            return false;
+        }
+
+        long digitos = t.chars()
+                .filter(Character::isDigit)
+                .count();
+
         return digitos >= 7 && digitos <= 15;
     }
 }

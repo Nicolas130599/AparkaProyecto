@@ -1,3 +1,4 @@
+
 package com.aparka.util;
 
 import org.slf4j.Logger;
@@ -8,60 +9,61 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Clase utilitaria para obtener la conexión a la base de datos.
+ * Gestiona las conexiones MySQL de APARKA.
  *
- * El puerto de MySQL cambia según la instalación (3307 o 3306), así que se prueba 3307 y, si no responde,
- * 3306; el primero que funcione se recuerda para las siguientes conexiones. No hace falta editar nada.
- * Opcional: se puede forzar otra conexión con las variables de entorno APARKA_DB_URL, APARKA_DB_USER y
- * APARKA_DB_PASSWORD.
+ * La conexion debe configurarse mediante variables de entorno:
+ * APARKA_DB_URL, APARKA_DB_USER y APARKA_DB_PASSWORD.
+ *
+ * No se utilizan credenciales ni bases de datos predeterminadas.
  */
 public class ConexionBD {
 
-    private static final Logger log = LoggerFactory.getLogger(ConexionBD.class);
-
-    private static final String[] PUERTOS = {"3307", "3306"};
-    private static final String BASE_Y_PARAMETROS = "/Parking?useSSL=false&serverTimezone=UTC";
-    private static final String USUARIO = "root";
-    private static final String PASSWORD = "";
-
-    private static volatile String urlActiva; // la primera URL que conectó con éxito
+    private static final Logger log =
+            LoggerFactory.getLogger(ConexionBD.class);
 
     public static Connection obtenerConexion() throws SQLException {
+
+        String url = obtenerVariableObligatoria("APARKA_DB_URL");
+        String usuario = obtenerVariableObligatoria("APARKA_DB_USER");
+        String password = obtenerVariableObligatoria("APARKA_DB_PASSWORD");
+
+        if (!url.startsWith("jdbc:mysql://")) {
+            throw new SQLException(
+                    "APARKA_DB_URL debe ser una URL JDBC de MySQL."
+            );
+        }
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            throw new SQLException("No se encontró el driver de MySQL", e);
-        }
-        String usuario = variable("APARKA_DB_USER", USUARIO);
-        String password = variable("APARKA_DB_PASSWORD", PASSWORD);
-
-        String forzada = System.getenv("APARKA_DB_URL");
-        if (forzada != null && !forzada.isBlank()) {
-            return DriverManager.getConnection(forzada.trim(), usuario, password);
-        }
-        if (urlActiva != null) {
-            return DriverManager.getConnection(urlActiva, usuario, password);
+            throw new SQLException(
+                    "No se encontro el driver de MySQL.", e
+            );
         }
 
-        SQLException ultimo = null;
-        for (String puerto : PUERTOS) {
-            String url = "jdbc:mysql://localhost:" + puerto + BASE_Y_PARAMETROS;
-            try {
-                Connection con = DriverManager.getConnection(url, usuario, password);
-                urlActiva = url;
-                log.info("Conectado a MySQL en el puerto {}", puerto);
-                return con;
-            } catch (SQLException e) {
-                log.warn("Sin conexión a MySQL en el puerto {}: {}", puerto, e.getMessage());
-                if (ultimo != null) e.addSuppressed(ultimo);
-                ultimo = e;
-            }
+        try {
+            return DriverManager.getConnection(url, usuario, password);
+        } catch (SQLException e) {
+            log.error(
+                    "No se pudo establecer la conexion con MySQL. SQLState: {}",
+                    e.getSQLState()
+            );
+            throw e;
         }
-        throw ultimo;
     }
 
-    private static String variable(String nombre, String porDefecto) {
-        String v = System.getenv(nombre);
-        return (v == null || v.isBlank()) ? porDefecto : v;
+    private static String obtenerVariableObligatoria(String nombre)
+            throws SQLException {
+
+        String valor = System.getenv(nombre);
+
+        if (valor == null || valor.isBlank()) {
+            throw new SQLException(
+                    "Falta configurar la variable de entorno obligatoria: "
+                    + nombre
+            );
+        }
+
+        return valor.trim();
     }
 }

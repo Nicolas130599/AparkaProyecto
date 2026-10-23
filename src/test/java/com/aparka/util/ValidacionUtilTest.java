@@ -1,3 +1,4 @@
+
 package com.aparka.util;
 
 import org.junit.jupiter.api.Test;
@@ -17,13 +18,22 @@ class ValidacionUtilTest {
     // ---------- esCorreoValido (Apache Commons Validator) ----------
 
     @ParameterizedTest
-    @ValueSource(strings = {"admin@aparka.com", "usuario.demo@gmail.com", "a@b.co"})
+    @ValueSource(strings = {
+        "admin@aparka.com",
+        "usuario.demo@gmail.com",
+        "a@b.co"
+    })
     void esCorreoValido_conFormatosCorrectos_devuelveTrue(String correo) {
         assertTrue(ValidacionUtil.esCorreoValido(correo));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"sin-arroba.com", "@sin-usuario.com", "espacios en@medio.com", "doble@@arroba.com"})
+    @ValueSource(strings = {
+        "sin-arroba.com",
+        "@sin-usuario.com",
+        "espacios en@medio.com",
+        "doble@@arroba.com"
+    })
     void esCorreoValido_conFormatosIncorrectos_devuelveFalse(String correo) {
         assertFalse(ValidacionUtil.esCorreoValido(correo));
     }
@@ -38,27 +48,68 @@ class ValidacionUtilTest {
 
     @Test
     void requerirTextoNoVacio_conTextoValido_noLanzaExcepcion() {
-        assertDoesNotThrow(() -> ValidacionUtil.requerirTextoNoVacio("Aparka", "Nombre"));
+        assertDoesNotThrow(() ->
+            ValidacionUtil.requerirTextoNoVacio("Aparka", "Nombre")
+        );
     }
 
     @ParameterizedTest
     @CsvSource({"'', Usuario", "'   ', Correo"})
-    void requerirTextoNoVacio_conTextoVacioOBlanco_lanzaExcepcion(String valor, String campo) {
+    void requerirTextoNoVacio_conTextoVacioOBlanco_lanzaExcepcion(
+            String valor, String campo) {
         assertThrows(IllegalArgumentException.class,
-                () -> ValidacionUtil.requerirTextoNoVacio(valor, campo));
+            () -> ValidacionUtil.requerirTextoNoVacio(valor, campo));
     }
 
     // ---------- esPlacaValida (Apache Commons Lang3) ----------
 
+    // Pruebas originales: placas válidas
     @ParameterizedTest
     @ValueSource(strings = {"ABC-123", "XYZ-999", "A1B2C3"})
     void esPlacaValida_conPlacasDeLargoRazonable_devuelveTrue(String placa) {
         assertTrue(ValidacionUtil.esPlacaValida(placa));
     }
 
+    // Pruebas originales: placas demasiado cortas
     @ParameterizedTest
     @ValueSource(strings = {"AB", "A"})
     void esPlacaValida_conPlacasMuyCortas_devuelveFalse(String placa) {
+        assertFalse(ValidacionUtil.esPlacaValida(placa));
+    }
+
+    // NUEVO: formatos flexibles para distintos vehículos
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "ABC123",
+        "1234AB",
+        "A1B234",
+        "abc-123",
+        "  ABC-123  "
+    })
+    void esPlacaValida_conFormatosFlexibles_devuelveTrue(String placa) {
+        assertTrue(ValidacionUtil.esPlacaValida(placa));
+    }
+
+    // NUEVO: rechazar caracteres y formatos incorrectos
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "AB@123",
+        "ABC 123",
+        "-ABC12",
+        "ABC12-",
+        "AB--123",
+        "ABCDEFGH",
+        "12345678"
+    })
+    void esPlacaValida_conFormatosIncorrectos_devuelveFalse(String placa) {
+        assertFalse(ValidacionUtil.esPlacaValida(placa));
+    }
+
+    // NUEVO: rechazar valores nulos, vacíos o espacios
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "   "})
+    void esPlacaValida_conNuloOVacio_devuelveFalse(String placa) {
         assertFalse(ValidacionUtil.esPlacaValida(placa));
     }
 
@@ -77,19 +128,28 @@ class ValidacionUtilTest {
     @Test
     void esPasswordValida_conLargoMinimoInvalido_lanzaExcepcion() {
         assertThrows(IllegalArgumentException.class,
-                () -> ValidacionUtil.esPasswordValida("cualquiera", 0));
+            () -> ValidacionUtil.esPasswordValida("cualquiera", 0));
     }
 
     // ---------- esTelefonoValido ----------
 
     @ParameterizedTest
-    @ValueSource(strings = {"987654321", "+51 987 654 321", "(01) 445-6789"})
+    @ValueSource(strings = {
+        "987654321",
+        "+51 987 654 321",
+        "(01) 445-6789"
+    })
     void esTelefonoValido_conFormatosCorrectos_devuelveTrue(String telefono) {
         assertTrue(ValidacionUtil.esTelefonoValido(telefono));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"12345", "abc123456", "987654321; DROP", "1234567890123456789012"})
+    @ValueSource(strings = {
+        "12345",
+        "abc123456",
+        "987654321; DROP",
+        "1234567890123456789012"
+    })
     void esTelefonoValido_conFormatosIncorrectos_devuelveFalse(String telefono) {
         assertFalse(ValidacionUtil.esTelefonoValido(telefono));
     }

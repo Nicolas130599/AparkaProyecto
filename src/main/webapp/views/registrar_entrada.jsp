@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -24,6 +25,11 @@
         </c:if>
 
         <form action="${pageContext.request.contextPath}/admin/entradas" method="post" class="form-aparka">
+
+            <%-- Protección CSRF: token generado por CsrfFilter --%>
+            <input type="hidden" name="csrfToken"
+                   value="<c:out value='${sessionScope.csrfToken}'/>">
+
             <div class="form-inline">
                 <div>
                     <label for="fecha">Fecha</label>
