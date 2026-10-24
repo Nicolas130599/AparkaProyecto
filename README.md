@@ -4,7 +4,7 @@
 
 ![Java](https://img.shields.io/badge/Java-17%2B-orange) ![Jakarta](https://img.shields.io/badge/Jakarta-Servlets%20%26%20JSP-blue) ![MySQL](https://img.shields.io/badge/Base%20de%20datos-MySQL-4479A1) ![Maven](https://img.shields.io/badge/Build-Maven-C71A36) ![JUnit](https://img.shields.io/badge/JUnit-80%20pruebas%20aprobadas-25A162) ![Tomcat](https://img.shields.io/badge/Servidor-Tomcat%2011-F8DC75)
 
-> **Estado verificado el 23/10/2026:** el Pull Request [#3](https://github.com/Nicolas130599/AparkaProyecto/pull/3) se fusionó a `main`; `mvn clean verify` finalizó con **BUILD SUCCESS**, **80 pruebas**, **0 fallos**, **0 errores** y **0 omitidas**. Las verificaciones manuales realizadas abarcaron inicio de sesión, navegación básica por roles, cierre de sesión y bloqueo del dashboard administrativo sin autorización. Esto no constituye una auditoría de seguridad ni una prueba integral de todos los módulos.
+> **Estado verificado el 23/10/2026:** el Pull Request [#3](https://github.com/Nicolas130599/AparkaProyecto/pull/3) se fusionó a `main`; `mvn clean verify` finalizó con **BUILD SUCCESS**, **80 pruebas**, **0 fallos**, **0 errores** y **0 omitidas**. Las verificaciones manuales realizadas abarcaron inicio de sesión, navegación básica por roles, cierre de sesión y bloqueo del dashboard administrativo sin autorización. Adicionalmente, se verificó el despliegue local con la base de demostración `APARKA_BD_100%` y un registro de entrada que actualizó la ocupación del Dashboard. Esto no constituye una auditoría de seguridad ni una prueba integral de todos los módulos.
 
 ## ✨ Funcionalidades
 
@@ -65,7 +65,7 @@ Las imágenes corresponden a una ejecución local de APARKA con datos de demostr
 
 ## 🧰 Tecnologías
 
-- **Java 17** como objetivo de compilación del proyecto; JDK compatible.
+- **Java 17** como objetivo de compilación del proyecto; JDK compatible (validado localmente con JDK 24).
 - **Jakarta Servlets, JSP/JSTL**, HTML, CSS y JavaScript.
 - **MySQL** mediante JDBC y consultas parametrizadas con `PreparedStatement`.
 - **Apache Maven**, empaquetado **WAR** y **Apache Tomcat 11**.
@@ -194,71 +194,171 @@ mvn clean verify
 | `ValidacionUtilTest` | 45 | 0 | 0 |
 | **Total** | **80** | **0** | **0** |
 
-Resultado: **BUILD SUCCESS**, con **0 pruebas omitidas**. La compilación generó `target/AparkaProyecto.war`. Algunas pruebas requieren una base MySQL de pruebas aislada (`parking_test`); **no ejecutar pruebas que escriben datos contra la base de producción**.
+Resultado: **BUILD SUCCESS**, con **0 pruebas omitidas**. La compilación generó `target/AparkaProyecto.war`. Algunas pruebas requieren una base MySQL de pruebas aislada (`parking_test`); **no ejecutar pruebas que escriben datos contra la base de demostración compartida o una base de producción**.
 
-## 🚀 Instalación local
+## 🚀 Instalación local para el equipo
+
+Esta guía permite reproducir el entorno de demostración validado el **23/10/2026**. Cada integrante ejecuta **su propia instancia de MySQL**: clonar GitHub no conecta automáticamente las computadoras a una base de datos remota.
 
 ### Requisitos
 
-- JDK compatible con el objetivo Java 17 del proyecto.
-- Apache Maven.
-- Apache Tomcat 11.
-- MySQL y una base de datos preparada para APARKA.
-- Configuración SMTP, solo para las funcionalidades que envían correos.
+- JDK compatible con el objetivo Java 17 (se utilizó JDK 24 en la validación local).
+- Apache Maven (se utilizó Maven 3.9.16).
+- Apache Tomcat 11 (se utilizó Tomcat 11.0.24).
+- MySQL Server compatible (se utilizó MySQL 9.5, puerto local `3307`) y, opcionalmente, MySQL Workbench.
+- Git y un editor como Visual Studio Code.
+- Configuración SMTP únicamente para funcionalidades que envían correos.
 
-### 1. Clonar
+### 1. Clonar el repositorio
 
-```bash
+```powershell
 git clone https://github.com/Nicolas130599/AparkaProyecto.git
 cd AparkaProyecto
 ```
 
-### 2. Preparar la base de datos
+### 2. Importar la base de datos de demostración
 
-El repositorio incluye `schema (1).sql`, que define una estructura inicial para `Parking`. **Revisar el script y respaldar los datos antes de ejecutarlo**. La aplicación incluye lógica adicional de actualización/verificación de esquema (`InicializadorEsquema`); por tanto, el script inicial no describe necesariamente todas las ampliaciones posteriores.
+El archivo **completo de estructura y datos** está incluido en el repositorio:
 
-### 3. Configurar variables de entorno
+```text
+database/APARKA_BD_100_PORCIENTO.sql
+```
 
-`ConexionBD` **exige** las tres variables siguientes (sin valores por defecto):
+En **MySQL Workbench**:
+
+1. Conectarse a la instancia local de MySQL con un usuario que pueda crear bases y tablas.
+2. Ir a **Server → Data Import**.
+3. Seleccionar **Import from Self-Contained File** y elegir `database/APARKA_BD_100_PORCIENTO.sql`.
+4. Dejar vacío **Default Target Schema** si el script ya contiene `CREATE DATABASE` y `USE`.
+5. Hacer clic en **Start Import** y verificar **Import Completed**.
+6. Actualizar la lista de esquemas y comprobar que existe `APARKA_BD_100%`.
+
+El archivo importado en la validación contenía **11 tablas** y **10 usuarios de demostración**. El script incluye sentencias que pueden **eliminar y recrear tablas**: importar solo en un entorno de prueba y respaldar cualquier base existente antes de ejecutarlo. No se requiere ejecutar `schema (1).sql` adicionalmente para este entorno de demostración.
+
+Para comprobar la importación desde MySQL Workbench:
+
+```sql
+USE `APARKA_BD_100%`;
+SHOW TABLES;
+SELECT COUNT(*) AS total_usuarios FROM usuariosistema;
+```
+
+> El nombre real del esquema contiene `%`. En instrucciones SQL se escribe literalmente `APARKA_BD_100%`; en la URL JDBC de esta instalación se utiliza `%25`.
+
+### 3. Crear el usuario MySQL de la aplicación
+
+El archivo SQL **no crea automáticamente** el usuario de conexión `aparka_app` ni sus permisos. En MySQL Workbench, conectado como administrador, ejecutar lo siguiente **solo si el usuario aún no existe**:
+
+```sql
+CREATE USER 'aparka_app'@'localhost' IDENTIFIED BY 'CAMBIAR_POR_CONTRASENA_LOCAL_SEGURA';
+GRANT SELECT, INSERT, UPDATE, DELETE
+ON `APARKA_BD_100%`.* TO 'aparka_app'@'localhost';
+SHOW GRANTS FOR 'aparka_app'@'localhost';
+```
+
+Reemplazar el texto de ejemplo por una contraseña segura **propia de cada equipo**. Si `aparka_app` ya existe, no repetir `CREATE USER`; comprobar sus permisos y añadir el `GRANT` si hace falta. No publicar contraseñas reales en el repositorio.
+
+### 4. Configurar variables de entorno
+
+La clase [`ConexionBD.java`](src/main/java/com/aparka/util/ConexionBD.java) exige tres variables de entorno, sin credenciales ni base predeterminadas:
 
 | Variable | Descripción |
 |---|---|
-| `APARKA_DB_URL` | URL JDBC de la base de datos correspondiente al entorno |
-| `APARKA_DB_USER` | Usuario de MySQL |
-| `APARKA_DB_PASSWORD` | Contraseña del usuario de MySQL |
+| `APARKA_DB_URL` | URL JDBC hacia la instancia y base local |
+| `APARKA_DB_USER` | Usuario MySQL de la aplicación |
+| `APARKA_DB_PASSWORD` | Contraseña de ese usuario MySQL |
 
-Para un ejemplo local con PowerShell (sustituir los valores según el entorno):
+En **PowerShell**, desde la carpeta del proyecto:
 
 ```powershell
-$env:APARKA_DB_URL = 'jdbc:mysql://localhost:3307/Parking?serverTimezone=UTC'
-$env:APARKA_DB_USER = Read-Host 'Usuario MySQL'
-$env:APARKA_DB_PASSWORD = Read-Host 'Contraseña MySQL'
+$env:APARKA_DB_URL = 'jdbc:mysql://localhost:3307/APARKA_BD_100%25'
+$env:APARKA_DB_USER = 'aparka_app'
+$env:APARKA_DB_PASSWORD = Read-Host 'Contraseña MySQL de aparka_app'
 ```
 
-Estas asignaciones duran únicamente en la sesión actual. **Tomcat debe iniciarse desde un proceso que reciba las variables**; si se inicia mediante `startup.bat` desde otra sesión de Windows, verificar que ese proceso tenga acceso a ellas. No publicar valores reales en GitHub.
+**Ajustar el puerto**: utilizar `3306` si esa es la configuración local, en vez de `3307`. El valor de `APARKA_DB_PASSWORD` es la contraseña **MySQL de `aparka_app`**, no la contraseña del login web.
+
+Las variables definidas con `$env:` permanecen en la **sesión actual de PowerShell**. Iniciar Tomcat desde esa misma sesión para que herede los valores.
+
+### 5. Compilar y generar el archivo WAR
+
+```powershell
+mvn clean package -DskipTests
+```
+
+Si aparece `BUILD SUCCESS`, el resultado se encuentra en:
+
+```text
+target/AparkaProyecto.war
+```
+
+Se omiten las pruebas en esta compilación inicial porque `EntradaDAOTest` exige una base de pruebas separada denominada `parking_test`, con su configuración correspondiente. **No cambiar el test para que escriba sobre `APARKA_BD_100%`.** Ejecutar la batería completa con `mvn clean verify` cuando el entorno de pruebas aislado esté preparado.
+
+### 6. Desplegar e iniciar Tomcat 11 (Windows)
+
+En PowerShell, **manteniendo la misma sesión que contiene las variables MySQL**, ajustar la ruta de Tomcat según la instalación:
+
+```powershell
+$env:CATALINA_HOME = 'C:\apache-tomcat-11.0.24'
+$env:CATALINA_BASE = $env:CATALINA_HOME
+
+Copy-Item '.\target\AparkaProyecto.war' "$env:CATALINA_HOME\webapps\AparkaProyecto.war" -Force
+& "$env:CATALINA_HOME\bin\catalina.bat" run
+```
+
+Esperar el mensaje `Server startup in [...] milliseconds`. Mantener abierta esa terminal mientras se utiliza la aplicación.
+
+Abrir en el navegador:
+
+**http://localhost:8080/AparkaProyecto/**
+
+Si se despliega una versión nueva, detener Tomcat antes de reemplazar el WAR y verificar que se despliegue la versión actualizada. El archivo WAR **no se copia automáticamente** a Tomcat al compilar con Maven.
+
+### 7. Acceso con cuentas de demostración
+
+Estas credenciales pertenecen al **login web de APARKA**, no a MySQL:
+
+| Rol | Usuario | Contraseña |
+|---|---|---|
+| Administrador | `admin` | `AparkaDemo2026!` |
+| Usuario estándar | `demo` | `AparkaDemo2026!` |
+
+Usar únicamente con la base de demostración importada. **No reutilizar estas credenciales en un sistema público o de producción.**
+
+### 8. Verificaciones funcionales registradas
+
+El 23/10/2026 se comprobó localmente:
+
+- Importación de **11 tablas** y presencia de **10 cuentas** de demostración.
+- Acceso a MySQL con `aparka_app` y permisos sobre `APARKA_BD_100%`.
+- Compilación con **BUILD SUCCESS** y generación de `AparkaProyecto.war`.
+- Inicio de Tomcat 11 y acceso al formulario de login.
+- Autenticación con la cuenta de demostración `admin`.
+- Carga del Dashboard, Entradas, Salidas, Flujo vehicular, Zonas y flujo, Gestión de zonas, Cajeros y Mi perfil.
+- Registro de una entrada vehicular de prueba, reflejada en el Dashboard: **ocupados de 5 a 6**, **disponibles de 180 a 179** y **Zona Centro de 3/50 a 4/50**.
+
+La visualización de un formulario **no implica** que todas sus acciones se hayan probado. En particular, la operación de salida, las modificaciones de zonas y cajeros y la exportación Excel requieren verificaciones funcionales adicionales.
+
+### 9. Solución de problemas frecuentes
+
+| Situación | Qué revisar |
+|---|---|
+| `Falta configurar la variable de entorno obligatoria` | Definir las tres variables `APARKA_DB_*` en la sesión desde la que se inicia Tomcat. |
+| `Access denied for user 'aparka_app'` | Verificar la contraseña MySQL y los permisos sobre `APARKA_BD_100%`. |
+| `Unknown database` | Importar el SQL y comprobar el nombre exacto del esquema y el puerto. |
+| `CATALINA_HOME environment variable is not defined correctly` | Establecer `CATALINA_HOME` y `CATALINA_BASE` con la ruta real de Tomcat. |
+| HTTP 404 en `/AparkaProyecto/` | Confirmar que el WAR esté en `webapps`, revisar los logs de Tomcat y el contexto desplegado. |
+| Fallos en `EntradaDAOTest` | Configurar una base de pruebas aislada `parking_test`; nunca ejecutar esas pruebas contra la base compartida. |
 
 Para correo SMTP, configurar `APARKA_EMAIL_PASSWORD` de forma segura cuando corresponda. El envío de correo debe verificarse por separado.
 
-### 4. Compilar y desplegar
-
-```bash
-mvn clean package
-```
-
-Copiar `target/AparkaProyecto.war` a la carpeta `webapps/` de Tomcat 11 y arrancar el servidor mediante `bin/startup.bat` en Windows. Acceder a:
-
-```text
-http://localhost:8080/AparkaProyecto/
-```
-
-En la verificación manual del 23/10/2026, el acceso sin sesión redirigió a `/AparkaProyecto/login`. La instalación de un nuevo WAR **no ocurre automáticamente** al compilar con Maven.
-
 ## 🌿 Control de versiones
 
-- Repositorio: [Nicolas130599/AparkaProyecto](https://github.com/Nicolas130599/AparkaProyecto)
+- Repositorio: [Nicolas130599/AparkaProyecto](https://github.com/Nicolas130599/AparkaProyecto).
 - Rama principal: `main`.
 - Pull Request [#3 — Seguridad CSRF, validaciones y pruebas](https://github.com/Nicolas130599/AparkaProyecto/pull/3): **fusionado y cerrado el 23/10/2026**.
 - Los cambios se verificaron en `main` con 80 pruebas JUnit satisfactorias.
+- El SQL de demostración se agregó al repositorio en el commit `088ca8a` (`database/APARKA_BD_100_PORCIENTO.sql`).
 
 ## 📚 Documentación académica
 
