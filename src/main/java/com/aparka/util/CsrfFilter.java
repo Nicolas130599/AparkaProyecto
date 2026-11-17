@@ -1,4 +1,3 @@
-
 package com.aparka.util;
 
 import jakarta.servlet.Filter;
@@ -24,7 +23,9 @@ import java.util.Base64;
         "/admin/salidas",
         "/perfil",
         "/perfil/foto",
-        "/reserva"
+        "/reserva",
+        "/recuperar",
+        "/restablecer"
 })
 public class CsrfFilter implements Filter {
 
@@ -34,15 +35,24 @@ public class CsrfFilter implements Filter {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res,
+    public void doFilter(ServletRequest req,
+                         ServletResponse res,
                          FilterChain chain)
             throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
+
+        String ruta = request.getServletPath();
+        String metodo = request.getMethod();
+
+        boolean rutaRecuperacion =
+                "/recuperar".equals(ruta)
+                || "/restablecer".equals(ruta);
+
         HttpSession session = request.getSession(false);
 
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
+        if ("POST".equalsIgnoreCase(metodo)) {
 
             String esperado = session == null
                     ? null
@@ -53,40 +63,55 @@ public class CsrfFilter implements Filter {
             if (!coinciden(esperado, recibido)) {
                 response.sendError(
                         HttpServletResponse.SC_FORBIDDEN,
-                        "Solicitud rechazada por seguridad CSRF"
-                );
+                        "Solicitud rechazada por seguridad CSRF");
                 return;
             }
 
-        } else if ("GET".equalsIgnoreCase(request.getMethod())
-                && session != null
-                && session.getAttribute("usuario") != null) {
+        } else if ("GET".equalsIgnoreCase(metodo)) {
 
-            synchronized (session) {
-                if (session.getAttribute(TOKEN_SESION) == null) {
-                    byte[] bytes = new byte[32];
-                    RANDOM.nextBytes(bytes);
+            boolean usuarioAutenticado =
+                    session != null
+                    && session.getAttribute("usuario") != null;
 
-                    String token = Base64.getUrlEncoder()
-                            .withoutPadding()
-                            .encodeToString(bytes);
+            if (rutaRecuperacion || usuarioAutenticado) {
 
-                    session.setAttribute(TOKEN_SESION, token);
+                if (session == null) {
+                    session = request.getSession(true);
                 }
+
+                obtenerOCrearToken(session);
             }
         }
 
         chain.doFilter(req, res);
     }
 
+    private void obtenerOCrearToken(HttpSession session) {
+
+        synchronized (session) {
+
+            if (session.getAttribute(TOKEN_SESION) == null) {
+
+                byte[] bytes = new byte[32];
+                RANDOM.nextBytes(bytes);
+
+                String token = Base64.getUrlEncoder()
+                        .withoutPadding()
+                        .encodeToString(bytes);
+
+                session.setAttribute(TOKEN_SESION, token);
+            }
+        }
+    }
+
     private boolean coinciden(String esperado, String recibido) {
+
         if (esperado == null || recibido == null) {
             return false;
         }
 
         return MessageDigest.isEqual(
                 esperado.getBytes(StandardCharsets.UTF_8),
-                recibido.getBytes(StandardCharsets.UTF_8)
-        );
+                recibido.getBytes(StandardCharsets.UTF_8));
     }
 }
