@@ -7,33 +7,88 @@ import java.util.Properties;
 
 public class EmailUtil {
 
-    // Configura aquí tu correo real de Gmail y tu contraseña de aplicación de 16 caracteres
+    private static final String REMITENTE_GMAIL =
+            "aparkasystem@gmail.com";
 
-private static final String REMITENTE = "aparkasystem@gmail.com";
-private static final String PASSWORD = System.getenv("APARKA_EMAIL_PASSWORD");
+    public static void enviarCorreo(
+            String destinatario,
+            String asunto,
+            String cuerpoMensaje
+    ) throws MessagingException {
 
+        String modo = System.getenv("APARKA_EMAIL_MODE");
+        boolean pruebas = "MAILPIT".equalsIgnoreCase(modo);
 
-
-    public static void enviarCorreo(String destinatario, String asunto, String cuerpoMensaje) throws MessagingException {
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        String remitente;
+        Session session;
 
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(REMITENTE, PASSWORD);
+        if (pruebas) {
+
+            // SMTP local: no utiliza Gmail ni Internet.
+            props.put("mail.smtp.host", "127.0.0.1");
+            props.put("mail.smtp.port", "1025");
+            props.put("mail.smtp.auth", "false");
+            props.put("mail.smtp.starttls.enable", "false");
+            props.put("mail.smtp.ssl.enable", "false");
+            props.put("mail.smtp.connectiontimeout", "5000");
+            props.put("mail.smtp.timeout", "5000");
+            props.put("mail.smtp.writetimeout", "5000");
+
+            remitente = "aparka-pruebas@localhost";
+            session = Session.getInstance(props);
+
+        } else if ("GMAIL".equalsIgnoreCase(modo)) {
+
+            // SMTP habitual de APARKA.
+            String password =
+                    System.getenv("APARKA_EMAIL_PASSWORD");
+
+            if (password == null || password.isBlank()) {
+                throw new MessagingException(
+                    "No se configuró APARKA_EMAIL_PASSWORD."
+                );
             }
-        });
 
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(REMITENTE));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-        message.setSubject(asunto);
-        message.setText(cuerpoMensaje);
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+            props.put("mail.smtp.connectiontimeout", "10000");
+            props.put("mail.smtp.timeout", "10000");
+
+            remitente = REMITENTE_GMAIL;
+
+            session = Session.getInstance(
+                props,
+                new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication
+                            getPasswordAuthentication() {
+
+                        return new PasswordAuthentication(
+                            REMITENTE_GMAIL,
+                            password
+                        );
+                    }
+                }
+            );
+
+        } else {
+            throw new MessagingException(
+                "Configura APARKA_EMAIL_MODE como MAILPIT o GMAIL."
+            );
+        }
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(remitente));
+        message.setRecipients(
+                Message.RecipientType.TO,
+                InternetAddress.parse(destinatario)
+        );
+        message.setSubject(asunto, "UTF-8");
+        message.setText(cuerpoMensaje, "UTF-8");
 
         Transport.send(message);
     }
